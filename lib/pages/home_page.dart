@@ -1,13 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
-  // final user = FirebaseAuth.instance.currentUser!;
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
+  // final user = FirebaseAuth.instance.currentUser!;
   void signOutUser() {
     FirebaseAuth.instance.signOut();
+    Navigator.pushNamed(context, '/initpage');
   }
 
   @override

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/pages/auth_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:organizare_timp/pages/home_page.dart';
+import 'package:organizare_timp/pages/init_page.dart';
+import 'package:organizare_timp/pages/login_page.dart';
+import 'package:organizare_timp/pages/register_page.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -20,7 +24,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AuthPage()
+      home: AuthPage(),
+      routes: {
+        '/initpage' : (context) => const InitPage(),
+        '/login': (context) => LoginPage(), 
+        '/register': (context) => RegisterPage(),
+        '/homepage': (context) => HomePage()
+
+      },
     );
   }
 }

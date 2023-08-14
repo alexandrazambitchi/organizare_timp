@@ -16,7 +16,7 @@ class AuthPage extends StatelessWidget {
             return HomePage();
           }
           else{
-            return const InitPage();
+            return InitPage();
           }
         },
       ),

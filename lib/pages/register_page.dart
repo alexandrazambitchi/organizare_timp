@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:organizare_timp/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
-  final Function()? onTap;
-  const RegisterPage({super.key, required this.onTap});
+  
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -39,10 +39,16 @@ class _RegisterPageState extends State<RegisterPage> {
       }
 
       Navigator.pop(context);
+      Navigator.pushNamed(context, '/homepage');
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       wrongMessage(e.code);
     }
+  }
+
+  void signInGoogle() async {
+    await AuthService().signInWithGoogle();
+    Navigator.pushNamed(context, '/homepage');
   }
 
   void wrongMessage(String message) {
@@ -161,33 +167,19 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 SquareTile(
                     imagePath: 'lib/images/google.png',
-                    onTap: () => AuthService().signInWithGoogle(),
+                    onTap: signInGoogle,
                     ),
               ],
             ),
 
             const SizedBox(height: 25),
 
-            Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Aveti deja un cont?',
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: widget.onTap,
-                      child: const Text(
-                        'Conectati-va!',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
+            Button(
+              onTap: () {
+                Navigator.pushNamed(context, '/initpage');
+              },
+              text: 'Inapoi la pagina principala',
+            ),
           ]),
         ),
       )),
