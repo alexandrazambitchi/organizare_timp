@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:organizare_timp/components/square_tile.dart';
 import 'package:organizare_timp/components/textfields.dart';
 import 'package:organizare_timp/components/button.dart';
@@ -30,10 +31,18 @@ class _LoginPageState extends State<LoginPage> {
         });
 
     try {
+      UserCredential userCredential = 
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
+
+      FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+          'uid' : userCredential.user!.uid,
+          'email': emailController.text
+        }, SetOptions(merge: true)
+        );  
+        
       if (context.mounted) Navigator.pop(context);
       Navigator.pushNamed(context, '/homepage');
     } on FirebaseAuthException catch (e) {

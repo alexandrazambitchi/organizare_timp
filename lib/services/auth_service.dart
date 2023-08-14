@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
-
   signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -14,6 +14,15 @@ class AuthService {
       idToken: googleAuth.idToken,
     );
 
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .set({'uid': userCredential.user!.uid, 'email': googleUser!.email},
+            SetOptions(merge: true));
+
+    return userCredential;
   }
 }
