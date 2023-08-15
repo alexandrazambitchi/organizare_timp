@@ -5,6 +5,8 @@ import 'package:organizare_timp/pages/home_page.dart';
 import 'package:organizare_timp/pages/init_page.dart';
 import 'package:organizare_timp/pages/login_page.dart';
 import 'package:organizare_timp/pages/register_page.dart';
+import 'package:organizare_timp/provider/activity_provider.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'pages/new_activity.dart';
 
@@ -22,8 +24,8 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context) => ChangeNotifierProvider(create: (context) => ActivityProvider(),
+  child: MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AuthPage(),
       routes: {
@@ -34,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/newactivitypage': (context) => NewActivityPage(),
 
       },
+    )
     );
-  }
+     
 }

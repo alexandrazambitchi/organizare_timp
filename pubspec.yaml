@@ -42,6 +42,7 @@ dependencies:
   cloud_firestore: ^4.8.4
   syncfusion_flutter_calendar:
   google_nav_bar: ^5.0.6
+  intl:
 
 dev_dependencies:
   flutter_test:
