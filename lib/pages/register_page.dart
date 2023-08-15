@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:organizare_timp/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
-  
   const RegisterPage({super.key});
 
   @override
@@ -32,17 +31,17 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try {
       if (passwordController.text == passwordConfirmController.text) {
-         UserCredential userCredential = 
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: emailController.text, 
-            password: passwordController.text);
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text);
 
-          FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
-              'uid' : userCredential.user!.uid,
-              'email': emailController.text
-            }, SetOptions(merge: true)
-            );  
-        
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set({
+          'uid': userCredential.user!.uid,
+          'email': emailController.text
+        }, SetOptions(merge: true));
       } else {
         //show message passwords don't match
         wrongMessage("Passwords don't match!");
@@ -176,9 +175,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 25,
                 ),
                 SquareTile(
-                    imagePath: 'lib/images/google.png',
-                    onTap: signInGoogle,
-                    ),
+                  imagePath: 'lib/images/google.png',
+                  onTap: signInGoogle,
+                ),
               ],
             ),
 
