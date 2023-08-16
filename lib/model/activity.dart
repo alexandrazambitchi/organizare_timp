@@ -19,7 +19,7 @@ class Activity{
     required this.category,
     required this.priority,
     required this.recurency,
-    this.activityColor = Colors.pink,
+    this.activityColor = Colors.blue,
     this.isAllDay = false
   });
 

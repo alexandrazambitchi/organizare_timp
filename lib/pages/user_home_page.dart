@@ -24,7 +24,7 @@ class _UserHomePageState extends State<UserHomePage> {
         actions: [
             IconButton(
             icon: const Icon(Icons.note_add_rounded),
-            onPressed: () =>  Navigator.pushNamed(context, '/newactivitypage'),
+            onPressed: () =>  Navigator.pushNamed(context, '/activityeditpage'),
             )
           ],
           

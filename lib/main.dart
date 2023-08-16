@@ -8,7 +8,7 @@ import 'package:organizare_timp/pages/register_page.dart';
 import 'package:organizare_timp/provider/activity_provider.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-import 'pages/new_activity.dart';
+import 'pages/activity_edit_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(), 
         '/register': (context) => RegisterPage(),
         '/homepage': (context) => HomePage(),
-        '/newactivitypage': (context) => NewActivityPage(),
+        '/activityeditpage': (context) => ActivityEditPage(),
 
       },
     )

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:organizare_timp/provider/activity_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+import '../model/activity_datasource.dart';
+import 'task_page.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -9,14 +14,17 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+  
+
   @override
   Widget build(BuildContext context) {
+    final activities = Provider.of<ActivityProvider>(context).activities;
     return Scaffold(
       appBar: AppBar(
         actions: [
             IconButton(
               icon: const Icon(Icons.note_add_rounded),
-              onPressed: () =>  Navigator.pushNamed(context, '/newactivitypage'),
+              onPressed: () =>  Navigator.pushNamed(context, '/activityeditpage'),
             )
           ],
           
@@ -30,7 +38,16 @@ class _CalendarPageState extends State<CalendarPage> {
                 SfCalendar(
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
-                  dataSource: MeetingDataSource(getAppointments()),
+                  dataSource: ActivityDataSource(activities),
+                  onLongPress: (details) {
+                    final provider = Provider.of<ActivityProvider>(context, listen: false);
+
+                    provider.setDate(details.date!);
+
+                    showModalBottomSheet(
+                      context: context, 
+                      builder: (context) => TasksWidget() );
+                  },
                 ),
               ]
             )
@@ -39,23 +56,5 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       
     );
-  }
-}
-
-List<Appointment> getAppointments() {
-  List<Appointment> meetings = <Appointment>[];
-  final DateTime today = DateTime.now();
-  final DateTime startTime = DateTime(today.year, today.month, today.day, 9, 0, 0);
-
-  final DateTime endTime = startTime.add(const Duration(hours: 2));
-
-  meetings.add(Appointment(startTime: startTime, endTime: endTime, subject: 'Conference', color: Colors.blue));
-
-  return meetings;
-}
-
-class MeetingDataSource extends CalendarDataSource{
-  MeetingDataSource(List<Appointment> source){
-    appointments = source;
   }
 }

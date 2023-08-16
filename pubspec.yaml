@@ -43,6 +43,7 @@ dependencies:
   syncfusion_flutter_calendar:
   google_nav_bar: ^5.0.6
   intl:
+  dropdownfield2:
 
 dev_dependencies:
   flutter_test:
