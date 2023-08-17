@@ -6,7 +6,7 @@ import 'package:organizare_timp/components/utils.dart';
 import 'package:organizare_timp/model/activity.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/activity_provider.dart';
+import '../../provider/activity_provider.dart';
 
 class ActivityEditPage extends StatefulWidget {
 
@@ -56,6 +56,11 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
       titleController.text = activity.title;
       startDate = activity.startTime;
       endDate = activity.endTime;
+      categoryController.text = activity.category;
+      priorityController.text = activity.priority;
+      detailsController.text = activity.description;
+      isChecked = activity.isAllDay;
+
     }
   }
 
@@ -135,7 +140,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
   void saveNewActivity() {
     final isValid = formKey.currentState!.validate();
-    FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
     if(isValid) {
       final activity = Activity(
@@ -164,11 +169,11 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
         FirebaseFirestore.instance
             .collection('activities')
-            .doc(_firebaseAuth.currentUser!.uid)
+            .doc(firebaseAuth.currentUser!.uid)
             .set({
-          'uid': _firebaseAuth.currentUser!.uid,
-          'email': _firebaseAuth.currentUser!.email,
-          'activity_tile': titleController.text,
+          'uid': firebaseAuth.currentUser!.uid,
+          'email': firebaseAuth.currentUser!.email,
+          'activity_title': titleController.text,
           'description': detailsController.text,
           'startTime': startDate,
           'endTime': endDate,
@@ -179,8 +184,6 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
         Navigator.of(context).pop();
     }
-    //save to db
-
 
   }
 
@@ -197,7 +200,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
         ,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Form(
           key: formKey,
           child: Column(
@@ -206,10 +209,10 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
               setTitle(),
 
-              SizedBox(height: 25,),
+              const SizedBox(height: 25,),
 
               CheckboxListTile(
-                title: Text("Toata ziua"),
+                title: const Text("Toata ziua"),
                 controlAffinity: ListTileControlAffinity.platform,
                 value: isChecked, 
                 onChanged: (value) {
@@ -217,11 +220,11 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                     isChecked = value!;
                   });
                 }),
-              SizedBox(height: 25,),
+              const SizedBox(height: 25,),
               dateTimePickers(),
-              SizedBox(height: 25,),
+              const SizedBox(height: 25,),
               setLocation(),
-              SizedBox(height: 25,),
+              const SizedBox(height: 25,),
 
               //category
               DropDownField(
@@ -235,7 +238,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                   });
                 },
               ),
-              SizedBox(height: 25,),
+              const SizedBox(height: 25,),
               // setPriority(),
               DropDownField(
                 controller: priorityController,
@@ -290,8 +293,8 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   }
 
   Widget setTitle() => TextFormField(
-    style: TextStyle(fontSize: 16),
-    decoration: InputDecoration(
+    style: const TextStyle(fontSize: 16),
+    decoration: const InputDecoration(
       border: UnderlineInputBorder(),
       hintText: 'Titlu' 
     ),
@@ -345,7 +348,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   );
 
   Future pickStartingDateTime({required bool pickDate}) async {
-    final date = await pickDateTime(startDate, pickDate: pickDate);
+    final date = await pickDateTime(startDate, pickDate: pickDate, isAEndTime: false);
 
     if(date ==  null) return;
 
@@ -360,7 +363,8 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
     final date = await pickDateTime(
       endDate, 
       pickDate: pickDate,
-      firstDate: pickDate ? startDate : null
+      firstDate: pickDate ? startDate : null,
+      isAEndTime: true
       );
 
     if(date ==  null) return;
@@ -369,7 +373,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   }
 
   Future<DateTime?> pickDateTime(
-    DateTime initialDate, {required bool pickDate, DateTime? firstDate}) async {
+    DateTime initialDate, {required bool pickDate, DateTime? firstDate, required isAEndTime}) async {
       if(pickDate){
         final date = await showDatePicker(
           context: context, 
@@ -391,12 +395,25 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
           initialEntryMode: TimePickerEntryMode.input,
           initialTime: TimeOfDay.fromDateTime(initialDate));
 
-        if (timeSelected == null) return null;
+          if (timeSelected == null) return null;
 
-        final date = DateTime(initialDate.year, initialDate.month, initialDate.day);
-        final time = Duration(hours: timeSelected.hour, minutes: timeSelected.minute);
+          final date = DateTime(initialDate.year, initialDate.month, initialDate.day);
+          final time = Duration(hours: timeSelected.hour, minutes: timeSelected.minute);
 
-        return date.add(time);
+          return date.add(time);
+        }
+        else {
+          final date = DateTime(initialDate.year, initialDate.month, initialDate.day);
+          const timeStart = Duration(hours: 0, minutes: 0);
+          const timeEnd = Duration(hours: 23, minutes: 59);
+          if(isAEndTime){
+            return date.add(timeEnd);
+          }
+          else{
+            return date.add(timeStart);
+          }
+
+          
         }
         
       }
@@ -407,7 +424,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
     required VoidCallback onClicked
   }) => ListTile(
     title: Text(text),
-    trailing: Icon(Icons.arrow_drop_down),
+    trailing: const Icon(Icons.arrow_drop_down),
     onTap: onClicked,
   );
 
@@ -417,14 +434,14 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   }) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(header, style: TextStyle(fontWeight: FontWeight.bold)),
+      Text(header, style: const TextStyle(fontWeight: FontWeight.bold)),
       child
     ],
   );
 
   Widget setLocation() => TextFormField(
-    style: TextStyle(fontSize: 16),
-    decoration: InputDecoration(
+    style: const TextStyle(fontSize: 16),
+    decoration: const InputDecoration(
       border: UnderlineInputBorder(),
       hintText: 'Locatie' 
     ),
@@ -434,8 +451,8 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   Widget setDetails() => TextFormField(
     keyboardType: TextInputType.multiline,
     maxLines: null,
-    style: TextStyle(fontSize: 16),
-    decoration: InputDecoration(
+    style: const TextStyle(fontSize: 16),
+    decoration: const InputDecoration(
       border: UnderlineInputBorder(),
       hintText: 'Descriere' 
     ),

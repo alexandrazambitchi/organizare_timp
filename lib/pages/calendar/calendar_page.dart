@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/provider/activity_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import '../model/activity_datasource.dart';
+import '../../model/activity_datasource.dart';
 import 'task_page.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -19,6 +21,8 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     final activities = Provider.of<ActivityProvider>(context).activities;
+    
+    // final activitiesFirebase = Firebase
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -35,12 +39,14 @@ class _CalendarPageState extends State<CalendarPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, 
               children: [
+                getDataFromDatabase(),
                 SfCalendar(
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
                   dataSource: ActivityDataSource(activities),
                   onLongPress: (details) {
                     final provider = Provider.of<ActivityProvider>(context, listen: false);
+
 
                     provider.setDate(details.date!);
 
@@ -56,5 +62,41 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       
     );
+  }
+
+  Widget getDataFromDatabase(){
+    return StreamBuilder<QuerySnapshot>(stream: FirebaseFirestore.instance.collection('activities').snapshots(),
+    builder: (context, snapshot) {
+      if(snapshot.hasError){
+        return const Text('error');
+      }
+
+      if(snapshot.connectionState == ConnectionState.waiting){
+        return const Text('loading');
+      }
+
+      return Container(
+        height: 300,
+        child: ListView(
+              children: snapshot.data!.docs.map<Widget>((doc) => activityItem(doc)).toList(),
+            ),
+      );
+
+    });
+    // 
+  }
+
+  Widget activityItem(DocumentSnapshot documentSnapshot){
+    Map<String, dynamic> data = documentSnapshot.data()! as Map<String, dynamic>;
+    
+    if(FirebaseAuth.instance.currentUser!.email == data['email'])
+    {
+      return ListTile(
+        title: Text(data['activity_tile']),
+        
+      );
+    } else{
+      return Container();
+    }
   }
 }

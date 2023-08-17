@@ -5,7 +5,7 @@ import 'package:organizare_timp/components/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../services/auth_service.dart';
+import '../../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   //final Function()? onTap;  required this.onTap

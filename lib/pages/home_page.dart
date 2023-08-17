@@ -1,9 +1,10 @@
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:organizare_timp/pages/calendar_page.dart';
-import 'package:organizare_timp/pages/group_page.dart';
+import 'package:organizare_timp/pages/group/group_page.dart';
 import 'package:organizare_timp/pages/settings_page.dart';
 import 'package:organizare_timp/pages/user_home_page.dart';
 import 'package:flutter/material.dart';
+
+import 'calendar/calendar_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
