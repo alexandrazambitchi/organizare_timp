@@ -18,7 +18,7 @@ class _TasksWidgetState extends State<TasksWidget> {
     final provider = Provider.of<ActivityProvider>(context);
     final selectedActivities = provider.activitiesOfSelectedDate;
     if(selectedActivities.isEmpty) {
-      return Center(
+      return const Center(
         child: Text(
           'Nu exista activitati',
           style: TextStyle(color: Colors.black, fontSize: 24)

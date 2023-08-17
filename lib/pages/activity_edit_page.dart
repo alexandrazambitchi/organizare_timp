@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdownfield2/dropdownfield2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/components/utils.dart';
 import 'package:organizare_timp/model/activity.dart';
@@ -20,6 +22,9 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   final formKey = GlobalKey<FormState>();
   late DateTime startDate;
   late DateTime endDate;
+
+  final bool allDay = false;
+  late bool isChecked = false;
 
   final titleController = TextEditingController();
   final locationController = TextEditingController();
@@ -130,6 +135,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
   void saveNewActivity() {
     final isValid = formKey.currentState!.validate();
+    FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
     if(isValid) {
       final activity = Activity(
@@ -156,9 +162,26 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
           provider.addActivity(activity);
         }
 
+        FirebaseFirestore.instance
+            .collection('activities')
+            .doc(_firebaseAuth.currentUser!.uid)
+            .set({
+          'uid': _firebaseAuth.currentUser!.uid,
+          'email': _firebaseAuth.currentUser!.email,
+          'activity_tile': titleController.text,
+          'description': detailsController.text,
+          'startTime': startDate,
+          'endTime': endDate,
+          'category': selectCategory,
+          'priority': selectPriority,
+          'isAllDay': isChecked
+        }, SetOptions(merge: true));
+
         Navigator.of(context).pop();
     }
     //save to db
+
+
   }
 
   @override
@@ -183,6 +206,17 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
               setTitle(),
 
+              SizedBox(height: 25,),
+
+              CheckboxListTile(
+                title: Text("Toata ziua"),
+                controlAffinity: ListTileControlAffinity.platform,
+                value: isChecked, 
+                onChanged: (value) {
+                  setState(() {
+                    isChecked = value!;
+                  });
+                }),
               SizedBox(height: 25,),
               dateTimePickers(),
               SizedBox(height: 25,),
@@ -351,7 +385,8 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
         return date.add(time);
       }
       else {
-        final timeSelected = await showTimePicker(
+        if(!isChecked){
+          final timeSelected = await showTimePicker(
           context: context, 
           initialEntryMode: TimePickerEntryMode.input,
           initialTime: TimeOfDay.fromDateTime(initialDate));
@@ -362,6 +397,8 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
         final time = Duration(hours: timeSelected.hour, minutes: timeSelected.minute);
 
         return date.add(time);
+        }
+        
       }
     }
 

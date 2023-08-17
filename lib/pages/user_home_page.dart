@@ -1,6 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:organizare_timp/pages/task_page.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter/material.dart';
+
+import '../model/activity_datasource.dart';
+import '../provider/activity_provider.dart';
 
 class UserHomePage extends StatefulWidget {
   UserHomePage({super.key});
@@ -19,6 +24,7 @@ class _UserHomePageState extends State<UserHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final activities = Provider.of<ActivityProvider>(context).activities;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -38,7 +44,16 @@ class _UserHomePageState extends State<UserHomePage> {
                 SfCalendar(
                   view: CalendarView.day,
                   firstDayOfWeek: 1,
-                  dataSource: MeetingDataSource(getAppointments()),
+                  dataSource: ActivityDataSource(activities),
+                  onLongPress: (details) {
+                    final provider = Provider.of<ActivityProvider>(context, listen: false);
+
+                    provider.setDate(details.date!);
+
+                    showModalBottomSheet(
+                      context: context, 
+                      builder: (context) => TasksWidget() );
+                  },
                 ),
               ]
             )
@@ -49,22 +64,4 @@ class _UserHomePageState extends State<UserHomePage> {
     );
   }
 
-}
-
-List<Appointment> getAppointments() {
-  List<Appointment> meetings = <Appointment>[];
-  final DateTime today = DateTime.now();
-  final DateTime startTime = DateTime(today.year, today.month, today.day, 9, 0, 0);
-
-  final DateTime endTime = startTime.add(const Duration(hours: 2));
-
-  meetings.add(Appointment(startTime: startTime, endTime: endTime, subject: 'Conference', color: Colors.blue));
-
-  return meetings;
-}
-
-class MeetingDataSource extends CalendarDataSource{
-  MeetingDataSource(List<Appointment> source){
-    appointments = source;
-  }
 }

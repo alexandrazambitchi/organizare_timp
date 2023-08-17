@@ -17,8 +17,8 @@ class ActivityDataSource extends CalendarDataSource {
   @override
   DateTime getEndTime(int index) => getActivity(index).endTime;
 
-  @override
-  String getSubject(int index) => getActivity(index).title;
+  // @override
+  // String getSubject(int index) => getActivity(index).subject;
 
   @override
   Color getColor(int index) => getActivity(index).activityColor;

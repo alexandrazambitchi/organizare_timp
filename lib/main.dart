@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:organizare_timp/pages/auth_page.dart';
+import 'package:organizare_timp/pages/root_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:organizare_timp/pages/home_page.dart';
-import 'package:organizare_timp/pages/init_page.dart';
+import 'package:organizare_timp/pages/first_page.dart';
 import 'package:organizare_timp/pages/login_page.dart';
 import 'package:organizare_timp/pages/register_page.dart';
 import 'package:organizare_timp/provider/activity_provider.dart';
@@ -27,9 +27,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => ChangeNotifierProvider(create: (context) => ActivityProvider(),
   child: MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AuthPage(),
+      home: RootPage(),
       routes: {
-        '/initpage' : (context) => const InitPage(),
+        '/initpage' : (context) => const FirstPage(),
         '/login': (context) => LoginPage(), 
         '/register': (context) => RegisterPage(),
         '/homepage': (context) => HomePage(),

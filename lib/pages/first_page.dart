@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/components/button.dart';
 
-class InitPage extends StatelessWidget {
-  const InitPage({super.key});
+class FirstPage extends StatelessWidget {
+  const FirstPage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,10 @@
 import 'package:organizare_timp/pages/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:organizare_timp/pages/init_page.dart';
+import 'package:organizare_timp/pages/first_page.dart';
 
-class AuthPage extends StatelessWidget {
-  const AuthPage({super.key});
+class RootPage extends StatelessWidget {
+  const RootPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class AuthPage extends StatelessWidget {
             return HomePage();
           }
           else{
-            return InitPage();
+            return FirstPage();
           }
         },
       ),
