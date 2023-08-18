@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:organizare_timp/model/activity.dart';
 
 class Group {

@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/button.dart';
-import '../../model/activity.dart';
 
 class JoinGroupPage extends StatefulWidget {
   const JoinGroupPage({super.key});
@@ -24,7 +23,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
 
     try {
       members.add(firebaseAuth.currentUser!.uid);
-      await firestore.collection("group").doc(groupIdController.text).update({
+      await firestore.collection("groups").doc(groupIdController.text).update({
         'members' : FieldValue.arrayUnion(members)
       });
       

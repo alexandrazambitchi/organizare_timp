@@ -14,6 +14,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
@@ -40,7 +41,8 @@ class _RegisterPageState extends State<RegisterPage> {
             .doc(userCredential.user!.uid)
             .set({
           'uid': userCredential.user!.uid,
-          'email': emailController.text
+          'email': emailController.text,
+          'name': nameController.text
         }, SetOptions(merge: true));
       } else {
         //show message passwords don't match
@@ -102,8 +104,15 @@ class _RegisterPageState extends State<RegisterPage> {
                 fontSize: 16,
               ),
             ),
-
             const SizedBox(height: 25),
+
+            // name textfield
+            Textfields(
+              controller: nameController,
+              hintText: 'Nume',
+              obscureText: false,
+            ),
+            const SizedBox(height: 10),
 
             // username textfield
             Textfields(

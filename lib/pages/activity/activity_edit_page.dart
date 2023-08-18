@@ -9,10 +9,12 @@ import 'package:provider/provider.dart';
 import '../../provider/activity_provider.dart';
 
 class ActivityEditPage extends StatefulWidget {
-
   final Activity? activity;
-  
-  const ActivityEditPage({Key? key, this.activity,}) : super(key: key);
+
+  const ActivityEditPage({
+    Key? key,
+    this.activity,
+  }) : super(key: key);
 
   @override
   State<ActivityEditPage> createState() => _ActivityEditPageState();
@@ -40,8 +42,6 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   String selectCategory = "";
   String selectPriority = "";
   String selectRecurrence = "";
-  
-
 
   @override
   void initState() {
@@ -60,15 +60,14 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
       priorityController.text = activity.priority;
       detailsController.text = activity.description;
       isChecked = activity.isAllDay;
-
     }
   }
 
-  Color setActivityColor(String category, String priority){
+  Color setActivityColor(String category, String priority) {
     Color activityColor = Colors.blue;
-    switch(category){
+    switch (category) {
       case 'Serviciu':
-        switch(priority){
+        switch (priority) {
           case 'Important':
             activityColor = Colors.amber.shade600;
             break;
@@ -81,7 +80,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
         }
         break;
       case 'Casa':
-        switch(priority){
+        switch (priority) {
           case 'Important':
             activityColor = Colors.teal.shade600;
             break;
@@ -94,7 +93,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
         }
         break;
       case 'Personal':
-        switch(priority){
+        switch (priority) {
           case 'Important':
             activityColor = Colors.indigo.shade500;
             break;
@@ -107,7 +106,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
         }
         break;
       case 'Timp liber':
-        switch(priority){
+        switch (priority) {
           case 'Important':
             activityColor = Colors.purple.shade600;
             break;
@@ -120,14 +119,13 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
         }
         break;
     }
-    
+
     return activityColor;
   }
 
-  String setRecurrency(String selectedRecurrency, String number)
-  {
+  String setRecurrency(String selectedRecurrency, String number) {
     //FREQ=DAILY;INTERVAL=1;COUNT=10
-    switch(selectedRecurrency){
+    switch (selectedRecurrency) {
       case 'Zilnic':
         return 'FREQ=DAILY;COUNT=$number';
       case 'Saptamanal':
@@ -138,40 +136,40 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
     return 'FREQ=DAILY;COUNT=1';
   }
 
-  void saveNewActivity() {
+  void saveNewActivity() async {
     final isValid = formKey.currentState!.validate();
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-    if(isValid) {
+    if (isValid) {
       final activity = Activity(
-        title: titleController.text, 
-        description: detailsController.text, 
-        startTime: startDate, 
-        endTime: endDate, 
-        category: selectCategory, 
-        priority: selectPriority, 
-        recurency: "",
-        // recurrenceRule: 'FREQ=DAILY;INTERVAL=1;COUNT=10',
-        // setRecurrency(selectRecurrence, recurrencyFreqController.text),
-        activityColor: setActivityColor(selectCategory, selectPriority),
-        isAllDay: false
-        );
+          user: firebaseAuth.currentUser!.uid,
+          title: titleController.text,
+          description: detailsController.text,
+          startTime: startDate,
+          endTime: endDate,
+          category: selectCategory,
+          priority: selectPriority,
+          recurency: "",
+          // recurrenceRule: 'FREQ=DAILY;INTERVAL=1;COUNT=10',
+          // setRecurrency(selectRecurrence, recurrencyFreqController.text),
+          activityColor: setActivityColor(selectCategory, selectPriority),
+          isAllDay: false);
 
-        final isEditing = widget.activity != null;
+      final isEditing = widget.activity != null;
 
-        final provider = Provider.of<ActivityProvider>(context, listen: false);
+      final provider = Provider.of<ActivityProvider>(context, listen: false);
 
-        if (isEditing){
-          provider.editActivity(activity, widget.activity!);
-        } else {
-          provider.addActivity(activity);
-        }
+      if (isEditing) {
+        provider.editActivity(activity, widget.activity!);
+      } else {
+        provider.addActivity(activity);
+      }
 
-        FirebaseFirestore.instance
-            .collection('activities')
-            .doc(firebaseAuth.currentUser!.uid)
-            .set({
-          'uid': firebaseAuth.currentUser!.uid,
+      List<String> activities = [];
+      try {
+        DocumentReference docReference =
+            await FirebaseFirestore.instance.collection('activities').add({
+          'user': firebaseAuth.currentUser!.uid,
           'email': firebaseAuth.currentUser!.email,
           'activity_title': titleController.text,
           'description': detailsController.text,
@@ -179,284 +177,294 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
           'endTime': endDate,
           'category': selectCategory,
           'priority': selectPriority,
-          'isAllDay': isChecked
-        }, SetOptions(merge: true));
+          'recurency': "",
+          'isAllDay': isChecked, 
+        });
+        activities.add(docReference.id);
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseAuth.currentUser!.uid)
+            .update({'activities': FieldValue.arrayUnion(activities)});
 
         Navigator.of(context).pop();
+      } catch (e) {
+        print(e);
+      }
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const CloseButton(),
-        actions: 
-          [IconButton(
-            icon: const Icon(Icons.save_rounded),
-            onPressed: saveNewActivity,
-          ),]
-        ,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(12),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-
-              setTitle(),
-
-              const SizedBox(height: 25,),
-
-              CheckboxListTile(
-                title: const Text("Toata ziua"),
-                controlAffinity: ListTileControlAffinity.platform,
-                value: isChecked, 
-                onChanged: (value) {
-                  setState(() {
-                    isChecked = value!;
-                  });
-                }),
-              const SizedBox(height: 25,),
-              dateTimePickers(),
-              const SizedBox(height: 25,),
-              setLocation(),
-              const SizedBox(height: 25,),
-
-              //category
-              DropDownField(
-                controller: categoryController,
-                hintText: "Categorie",
-                enabled: true,
-                items: categories,
-                onValueChanged: (value) {
-                  setState(() {
-                    selectCategory = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 25,),
-              // setPriority(),
-              DropDownField(
-                controller: priorityController,
-                hintText: "Prioritate",
-                enabled: true,
-                items: priorities,
-                onValueChanged: (value) {
-                  setState(() {
-                    selectPriority = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 25,),
-              const Text('Reminders setting'),
-              const SizedBox(height: 25,),
-              setDetails(),
-              const SizedBox(height: 25,),
-              // setRecurency(),
-              // Row(
-              //   children: [
-              //     DropDownField(
-              //       controller: recurrencyController,
-              //       hintText: "Recurenta",
-              //       enabled: true,
-              //       items: recurrencyOptions,
-              //       onValueChanged: (value) {
-              //         setState(() {
-              //           selectRecurrence = value;
-              //         });
-              //       },
-              //     ),
-              //     // TextFormField(
-              //     //   style: TextStyle(fontSize: 16),
-              //     //   decoration: InputDecoration(
-              //     //     border: UnderlineInputBorder(),
-              //     //     hintText: 'Frecventa recurentei' 
-              //     //   ),
-              //     //   controller: recurrencyFreqController,
-              //     // )
-              //   ],
-              // ),
-              
-
-                           
-            ],
+        appBar: AppBar(
+          leading: const CloseButton(),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.save_rounded),
+              onPressed: saveNewActivity,
             ),
+          ],
         ),
-      )
-            
-          
-    );
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                setTitle(),
+
+                const SizedBox(
+                  height: 25,
+                ),
+
+                CheckboxListTile(
+                    title: const Text("Toata ziua"),
+                    controlAffinity: ListTileControlAffinity.platform,
+                    value: isChecked,
+                    onChanged: (value) {
+                      setState(() {
+                        isChecked = value!;
+                      });
+                    }),
+                const SizedBox(
+                  height: 25,
+                ),
+                dateTimePickers(),
+                const SizedBox(
+                  height: 25,
+                ),
+                setLocation(),
+                const SizedBox(
+                  height: 25,
+                ),
+
+                //category
+                DropDownField(
+                  controller: categoryController,
+                  hintText: "Categorie",
+                  enabled: true,
+                  items: categories,
+                  onValueChanged: (value) {
+                    setState(() {
+                      selectCategory = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                // setPriority(),
+                DropDownField(
+                  controller: priorityController,
+                  hintText: "Prioritate",
+                  enabled: true,
+                  items: priorities,
+                  onValueChanged: (value) {
+                    setState(() {
+                      selectPriority = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                const Text('Reminders setting'),
+                const SizedBox(
+                  height: 25,
+                ),
+                setDetails(),
+                const SizedBox(
+                  height: 25,
+                ),
+                // setRecurency(),
+                // Row(
+                //   children: [
+                //     DropDownField(
+                //       controller: recurrencyController,
+                //       hintText: "Recurenta",
+                //       enabled: true,
+                //       items: recurrencyOptions,
+                //       onValueChanged: (value) {
+                //         setState(() {
+                //           selectRecurrence = value;
+                //         });
+                //       },
+                //     ),
+                //     // TextFormField(
+                //     //   style: TextStyle(fontSize: 16),
+                //     //   decoration: InputDecoration(
+                //     //     border: UnderlineInputBorder(),
+                //     //     hintText: 'Frecventa recurentei'
+                //     //   ),
+                //     //   controller: recurrencyFreqController,
+                //     // )
+                //   ],
+                // ),
+              ],
+            ),
+          ),
+        ));
   }
 
   Widget setTitle() => TextFormField(
-    style: const TextStyle(fontSize: 16),
-    decoration: const InputDecoration(
-      border: UnderlineInputBorder(),
-      hintText: 'Titlu' 
-    ),
-    onFieldSubmitted: (_) => saveNewActivity(),
-    validator: (title) =>
-      title != null && title.isEmpty ? 'Activitatea trebuie sa aiba un titlu' : null,
-    controller: titleController,
-  );
+        style: const TextStyle(fontSize: 16),
+        decoration: const InputDecoration(
+            border: UnderlineInputBorder(), hintText: 'Titlu'),
+        onFieldSubmitted: (_) => saveNewActivity(),
+        validator: (title) => title != null && title.isEmpty
+            ? 'Activitatea trebuie sa aiba un titlu'
+            : null,
+        controller: titleController,
+      );
 
   Widget dateTimePickers() => Column(
-    children: [
-      buildStarting(),
-      buildEnding(),
-    ],
-  );
+        children: [
+          buildStarting(),
+          buildEnding(),
+        ],
+      );
 
-  Widget buildStarting () => buildHeader(
-    header: 'De la',
-    child: Row(
-      children: [
-        Expanded(
-          child: buildDropdownField(
-            text: Utils.toDate(startDate),
-            onClicked: () => pickStartingDateTime(pickDate: true),
-           )),
-           Expanded(
-          child: buildDropdownField(
-            text: Utils.toTime(startDate),
-            onClicked: () => pickStartingDateTime(pickDate: false),
-           ))
-      ],
-    ),
-  );
+  Widget buildStarting() => buildHeader(
+        header: 'De la',
+        child: Row(
+          children: [
+            Expanded(
+                child: buildDropdownField(
+              text: Utils.toDate(startDate),
+              onClicked: () => pickStartingDateTime(pickDate: true),
+            )),
+            Expanded(
+                child: buildDropdownField(
+              text: Utils.toTime(startDate),
+              onClicked: () => pickStartingDateTime(pickDate: false),
+            ))
+          ],
+        ),
+      );
 
-  Widget buildEnding () => buildHeader(
-    header: 'Pana la',
-    child: Row(
-      children: [
-        Expanded(
-          child: buildDropdownField(
-            text: Utils.toDate(endDate),
-            onClicked: () => pickEndingDateTime(pickDate: true),
-           )),
-           Expanded(
-          child: buildDropdownField(
-            text: Utils.toTime(endDate),
-            onClicked: () => pickEndingDateTime(pickDate: false),
-           ))
-      ],
-    ),
-  );
+  Widget buildEnding() => buildHeader(
+        header: 'Pana la',
+        child: Row(
+          children: [
+            Expanded(
+                child: buildDropdownField(
+              text: Utils.toDate(endDate),
+              onClicked: () => pickEndingDateTime(pickDate: true),
+            )),
+            Expanded(
+                child: buildDropdownField(
+              text: Utils.toTime(endDate),
+              onClicked: () => pickEndingDateTime(pickDate: false),
+            ))
+          ],
+        ),
+      );
 
   Future pickStartingDateTime({required bool pickDate}) async {
-    final date = await pickDateTime(startDate, pickDate: pickDate, isAEndTime: false);
+    final date =
+        await pickDateTime(startDate, pickDate: pickDate, isAEndTime: false);
 
-    if(date ==  null) return;
+    if (date == null) return;
 
-    if(date.isAfter(endDate)) {
-      endDate = DateTime(date.year, date.month, date.day, endDate.hour, endDate.minute);
+    if (date.isAfter(endDate)) {
+      endDate = DateTime(
+          date.year, date.month, date.day, endDate.hour, endDate.minute);
     }
 
     setState(() => startDate = date);
   }
 
   Future pickEndingDateTime({required bool pickDate}) async {
-    final date = await pickDateTime(
-      endDate, 
-      pickDate: pickDate,
-      firstDate: pickDate ? startDate : null,
-      isAEndTime: true
-      );
+    final date = await pickDateTime(endDate,
+        pickDate: pickDate,
+        firstDate: pickDate ? startDate : null,
+        isAEndTime: true);
 
-    if(date ==  null) return;
+    if (date == null) return;
 
     setState(() => endDate = date);
   }
 
-  Future<DateTime?> pickDateTime(
-    DateTime initialDate, {required bool pickDate, DateTime? firstDate, required isAEndTime}) async {
-      if(pickDate){
-        final date = await showDatePicker(
-          context: context, 
-          initialDate: initialDate, 
-          firstDate: firstDate ?? DateTime(2015, 8), 
-          lastDate: DateTime(2101)
-        );
+  Future<DateTime?> pickDateTime(DateTime initialDate,
+      {required bool pickDate,
+      DateTime? firstDate,
+      required isAEndTime}) async {
+    if (pickDate) {
+      final date = await showDatePicker(
+          context: context,
+          initialDate: initialDate,
+          firstDate: firstDate ?? DateTime(2015, 8),
+          lastDate: DateTime(2101));
 
-        if (date == null) return null;
+      if (date == null) return null;
 
-        final time = Duration(hours: initialDate.hour, minutes: initialDate.minute);
+      final time =
+          Duration(hours: initialDate.hour, minutes: initialDate.minute);
+
+      return date.add(time);
+    } else {
+      if (!isChecked) {
+        final timeSelected = await showTimePicker(
+            context: context,
+            initialEntryMode: TimePickerEntryMode.input,
+            initialTime: TimeOfDay.fromDateTime(initialDate));
+
+        if (timeSelected == null) return null;
+
+        final date =
+            DateTime(initialDate.year, initialDate.month, initialDate.day);
+        final time =
+            Duration(hours: timeSelected.hour, minutes: timeSelected.minute);
 
         return date.add(time);
-      }
-      else {
-        if(!isChecked){
-          final timeSelected = await showTimePicker(
-          context: context, 
-          initialEntryMode: TimePickerEntryMode.input,
-          initialTime: TimeOfDay.fromDateTime(initialDate));
-
-          if (timeSelected == null) return null;
-
-          final date = DateTime(initialDate.year, initialDate.month, initialDate.day);
-          final time = Duration(hours: timeSelected.hour, minutes: timeSelected.minute);
-
-          return date.add(time);
+      } else {
+        final date =
+            DateTime(initialDate.year, initialDate.month, initialDate.day);
+        const timeStart = Duration(hours: 0, minutes: 0);
+        const timeEnd = Duration(hours: 23, minutes: 59);
+        if (isAEndTime) {
+          return date.add(timeEnd);
+        } else {
+          return date.add(timeStart);
         }
-        else {
-          final date = DateTime(initialDate.year, initialDate.month, initialDate.day);
-          const timeStart = Duration(hours: 0, minutes: 0);
-          const timeEnd = Duration(hours: 23, minutes: 59);
-          if(isAEndTime){
-            return date.add(timeEnd);
-          }
-          else{
-            return date.add(timeStart);
-          }
-
-          
-        }
-        
       }
     }
+  }
 
-  Widget buildDropdownField ({
-    required String text,
-    required VoidCallback onClicked
-  }) => ListTile(
-    title: Text(text),
-    trailing: const Icon(Icons.arrow_drop_down),
-    onTap: onClicked,
-  );
+  Widget buildDropdownField(
+          {required String text, required VoidCallback onClicked}) =>
+      ListTile(
+        title: Text(text),
+        trailing: const Icon(Icons.arrow_drop_down),
+        onTap: onClicked,
+      );
 
   Widget buildHeader({
     required String header,
     required Widget child,
-  }) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(header, style: const TextStyle(fontWeight: FontWeight.bold)),
-      child
-    ],
-  );
+  }) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(header, style: const TextStyle(fontWeight: FontWeight.bold)),
+          child
+        ],
+      );
 
   Widget setLocation() => TextFormField(
-    style: const TextStyle(fontSize: 16),
-    decoration: const InputDecoration(
-      border: UnderlineInputBorder(),
-      hintText: 'Locatie' 
-    ),
-    controller: locationController,
-  );
+        style: const TextStyle(fontSize: 16),
+        decoration: const InputDecoration(
+            border: UnderlineInputBorder(), hintText: 'Locatie'),
+        controller: locationController,
+      );
 
   Widget setDetails() => TextFormField(
-    keyboardType: TextInputType.multiline,
-    maxLines: null,
-    style: const TextStyle(fontSize: 16),
-    decoration: const InputDecoration(
-      border: UnderlineInputBorder(),
-      hintText: 'Descriere' 
-    ),
-    controller: detailsController,
-  );
-
- }
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        style: const TextStyle(fontSize: 16),
+        decoration: const InputDecoration(
+            border: UnderlineInputBorder(), hintText: 'Descriere'),
+        controller: detailsController,
+      );
+}

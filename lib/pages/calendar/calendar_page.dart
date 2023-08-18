@@ -5,6 +5,7 @@ import 'package:organizare_timp/provider/activity_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../../model/activity.dart';
 import '../../model/activity_datasource.dart';
 import 'task_page.dart';
 
@@ -16,13 +17,32 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+
+  // var collection = FirebaseFirestore.instance.collection("users");
+  // late List<Map<String, dynamic>> activitiesRaw;
+  // late List<Activity> activities = [];
+
+  void getActivityList(List<Activity> activities) async {
+    List<Activity> tempList = [];
+   
+    for (var element in activities) {
+      if(element.user == FirebaseAuth.instance.currentUser!.uid){
+        tempList.add(element);
+      }
+    }
+
+     activities = tempList;
+  }
   
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ActivityProvider>(context, listen: true);
+
+    provider.getActivitiesFromDataBase(FirebaseAuth.instance.currentUser!.uid);
+
     final activities = Provider.of<ActivityProvider>(context).activities;
-    
-    // final activitiesFirebase = Firebase
+    getActivityList(activities);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -39,15 +59,12 @@ class _CalendarPageState extends State<CalendarPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, 
               children: [
-                getDataFromDatabase(),
+                // getDataFromDatabase(),
                 SfCalendar(
                   view: CalendarView.month,
                   firstDayOfWeek: 1,
                   dataSource: ActivityDataSource(activities),
                   onLongPress: (details) {
-                    final provider = Provider.of<ActivityProvider>(context, listen: false);
-
-
                     provider.setDate(details.date!);
 
                     showModalBottomSheet(
@@ -64,39 +81,39 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  Widget getDataFromDatabase(){
-    return StreamBuilder<QuerySnapshot>(stream: FirebaseFirestore.instance.collection('activities').snapshots(),
-    builder: (context, snapshot) {
-      if(snapshot.hasError){
-        return const Text('error');
-      }
+  // Widget getDataFromDatabase(){
+  //   return StreamBuilder<QuerySnapshot>(stream: FirebaseFirestore.instance.collection('activities').snapshots(),
+  //   builder: (context, snapshot) {
+  //     if(snapshot.hasError){
+  //       return const Text('error');
+  //     }
 
-      if(snapshot.connectionState == ConnectionState.waiting){
-        return const Text('loading');
-      }
+  //     if(snapshot.connectionState == ConnectionState.waiting){
+  //       return const Text('loading');
+  //     }
 
-      return Container(
-        height: 300,
-        child: ListView(
-              children: snapshot.data!.docs.map<Widget>((doc) => activityItem(doc)).toList(),
-            ),
-      );
+  //     return Container(
+  //       height: 300,
+  //       child: ListView(
+  //             children: snapshot.data!.docs.map<Widget>((doc) => activityItem(doc)).toList(),
+  //           ),
+  //     );
 
-    });
-    // 
-  }
+  //   });
+  //   // 
+  // }
 
-  Widget activityItem(DocumentSnapshot documentSnapshot){
-    Map<String, dynamic> data = documentSnapshot.data()! as Map<String, dynamic>;
+  // Widget activityItem(DocumentSnapshot documentSnapshot){
+  //   Map<String, dynamic> data = documentSnapshot.data()! as Map<String, dynamic>;
     
-    if(FirebaseAuth.instance.currentUser!.email == data['email'])
-    {
-      return ListTile(
-        title: Text(data['activity_tile']),
+  //   if(FirebaseAuth.instance.currentUser!.email == data['email'])
+  //   {
+  //     return ListTile(
+  //       title: Text(data['activity_tile']),
         
-      );
-    } else{
-      return Container();
-    }
-  }
+  //     );
+  //   } else{
+  //     return Container();
+  //   }
+  // }
 }

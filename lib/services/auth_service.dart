@@ -20,9 +20,10 @@ class AuthService {
     FirebaseFirestore.instance
         .collection('users')
         .doc(userCredential.user!.uid)
-        .set({'uid': userCredential.user!.uid, 'email': googleUser!.email},
+        .set({'uid': userCredential.user!.uid, 
+              'email': googleUser!.email,
+              'name': googleUser!.displayName},
             SetOptions(merge: true));
-
     return userCredential;
   }
 }

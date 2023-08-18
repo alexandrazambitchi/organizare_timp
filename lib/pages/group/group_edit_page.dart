@@ -26,7 +26,7 @@ class _NewGroupPageState extends State<NewGroupPage> {
 
     try {
       members.add(firebaseAuth.currentUser!.uid);
-      DocumentReference docReference = await firestore.collection("group").add({
+      DocumentReference docReference = await firestore.collection("groups").add({
         'name': groupNameController.text,
         'leader': firebaseAuth.currentUser!.uid,
         'description': descriptionController.text,

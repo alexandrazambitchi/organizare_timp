@@ -12,7 +12,7 @@ class GroupPage extends StatefulWidget {
 
 class _GroupPageState extends State<GroupPage> {
 
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +53,9 @@ class _GroupPageState extends State<GroupPage> {
                               text: "Alatura-te unui grup")
                           ],
                         ),
+                        Column(
+                          
+                        )
 
                       ]
                   )
