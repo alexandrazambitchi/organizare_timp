@@ -5,6 +5,8 @@ import 'package:organizare_timp/provider/activity_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../activity/activity_view_page.dart';
+
 class TasksWidget extends StatefulWidget {
   const TasksWidget({super.key});
 
@@ -35,14 +37,14 @@ class _TasksWidgetState extends State<TasksWidget> {
         headerDateFormat: DateFormat.DAY+DateFormat.ABBR_MONTH,
         todayHighlightColor: Colors.black,
         selectionDecoration: BoxDecoration(color: Colors.pinkAccent.withOpacity(0.4)),
-        // onTap: (details) {
-        //   if(details.appointments == null) return;
+        onTap: (details) {
+          if(details.appointments == null) return;
 
-        //   final activity = details.appointments!.first;
+          final activity = details.appointments!.first;
 
-        //   Navigator.of(context).push(MaterialPageRoute(builder: (context) => ActivityViewingPage(activity: activity),)
-        //   );
-        // },
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ActivityViewingPage(activity: activity),)
+          );
+        },
       );
   }
 

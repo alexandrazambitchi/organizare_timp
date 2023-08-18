@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         '/homepage': (context) => HomePage(),
         '/activityeditpage': (context) => ActivityEditPage(),
         '/joingroup' : (context) => JoinGroupPage(),
-        '/creategroup' : (context) => NewGroupPage(),
+        '/creategroup' : (context) => GroupEditPage(),
 
       },
     )

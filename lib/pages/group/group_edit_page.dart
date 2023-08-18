@@ -1,20 +1,41 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:organizare_timp/pages/group/group_view_page.dart';
 
 import '../../components/button.dart';
 import '../../model/activity.dart';
+import '../../model/group.dart';
 
-class NewGroupPage extends StatefulWidget {
-  const NewGroupPage({super.key});
+class GroupEditPage extends StatefulWidget {
+  final Group? group;
+
+  const GroupEditPage({
+    Key? key,
+    this.group,
+  }) : super(key: key);
 
   @override
-  State<NewGroupPage> createState() => _NewGroupPageState();
+  State<GroupEditPage> createState() => _GroupEditPageState();
 }
 
-class _NewGroupPageState extends State<NewGroupPage> {
+class _GroupEditPageState extends State<GroupEditPage> {
   final groupNameController = TextEditingController();
   final descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if(widget.group != null){
+      final group = widget.group!;
+
+      groupNameController.text = group.name;
+      descriptionController.text = group.description;
+    }
+  }
 
   void saveGroup() async {
     List<String>? members = [];
@@ -23,6 +44,8 @@ class _NewGroupPageState extends State<NewGroupPage> {
 
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    final isEditing = widget.group != null;
 
     try {
       members.add(firebaseAuth.currentUser!.uid);
@@ -33,13 +56,23 @@ class _NewGroupPageState extends State<NewGroupPage> {
         'members': members,
         'activities': activities
       });
+
+      Group newGroup = Group(
+        id: docReference.id, 
+        name: groupNameController.text, 
+        leader: firebaseAuth.currentUser!.uid, 
+        description: descriptionController.text, 
+        members: members, 
+        activities: activities);
+      
       
       groups.add(docReference.id);
       await firestore.collection("users").doc(firebaseAuth.currentUser!.uid).update({
         'groups' : FieldValue.arrayUnion(groups)
       });
 
-       Navigator.of(context).pop();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => GroupViewingPage(group: newGroup)));
     } catch (e){
       print(e);
     }

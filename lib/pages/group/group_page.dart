@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/components/button.dart';
+import 'package:organizare_timp/pages/group/group_list_page.dart';
 
 class GroupPage extends StatefulWidget {
   const GroupPage({super.key});
@@ -50,7 +51,10 @@ class _GroupPageState extends State<GroupPage> {
                                 Navigator.pushNamed(context, '/joingroup'
                                 );
                               },
-                              text: "Alatura-te unui grup")
+                              text: "Alatura-te unui grup"),
+                            Button(onTap: () {
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => GroupListPage()));
+                            }, text: "Lista grupurilor tale")
                           ],
                         ),
                         Column(

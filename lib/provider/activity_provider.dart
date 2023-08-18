@@ -36,6 +36,7 @@ class ActivityProvider extends ChangeNotifier{
             endTime: tempElem["endTime"], 
             category: tempElem["category"], 
             priority: tempElem["priority"], 
+            location: tempElem["location"],
             recurency: tempElem["recurency"]));
       }
     }

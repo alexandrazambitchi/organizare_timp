@@ -8,6 +8,7 @@ class Activity{
   final DateTime endTime;
   final String category;
   final String priority;
+  final String location;
   final String recurency;
   final Color activityColor;
   final bool isAllDay;
@@ -20,6 +21,7 @@ class Activity{
     required this.endTime,
     required this.category,
     required this.priority,
+    required this.location,
     required this.recurency,
     this.activityColor = Colors.blue,
     this.isAllDay = false

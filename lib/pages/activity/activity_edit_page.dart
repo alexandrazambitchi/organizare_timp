@@ -150,6 +150,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
           category: selectCategory,
           priority: selectPriority,
           recurency: "",
+          location: locationController.text,
           // recurrenceRule: 'FREQ=DAILY;INTERVAL=1;COUNT=10',
           // setRecurrency(selectRecurrence, recurrencyFreqController.text),
           activityColor: setActivityColor(selectCategory, selectPriority),
@@ -177,6 +178,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
           'endTime': endDate,
           'category': selectCategory,
           'priority': selectPriority,
+          'location': locationController.text,
           'recurency': "",
           'isAllDay': isChecked, 
         });
