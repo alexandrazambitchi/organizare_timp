@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:organizare_timp/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
+import '../home_page.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -35,7 +37,10 @@ class _RegisterPageState extends State<RegisterPage> {
         passwordController.text,
         nameController.text,
       );
-      if (context.mounted) Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => const HomePage()));
+      }
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
@@ -44,7 +49,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void signInGoogle() async {
     await AuthService().signInWithGoogle();
-    if (context.mounted) Navigator.pop(context);
+    if (context.mounted) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => const HomePage()));
+    }
   }
 
   @override

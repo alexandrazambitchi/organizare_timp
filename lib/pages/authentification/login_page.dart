@@ -2,6 +2,7 @@ import 'package:organizare_timp/components/square_tile.dart';
 import 'package:organizare_timp/components/textfields.dart';
 import 'package:organizare_timp/components/button.dart';
 import 'package:flutter/material.dart';
+import 'package:organizare_timp/pages/home_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/auth_service.dart';
@@ -27,7 +28,10 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await authService.signInWithEmailAndPassword(
           emailController.text, passwordController.text);
-      if (context.mounted) Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => const HomePage()));
+      }
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
@@ -36,8 +40,10 @@ class _LoginPageState extends State<LoginPage> {
 
   void signInGoogle() async {
     await AuthService().signInWithGoogle();
-    if (context.mounted) Navigator.pop(context);
-
+    if (context.mounted) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => const HomePage()));
+    }
   }
 
   @override

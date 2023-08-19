@@ -1,17 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdownfield2/dropdownfield2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/components/utils.dart';
 import 'package:organizare_timp/model/activity.dart';
 
-import '../../provider/activity_provider.dart';
+import '../../services/activity_service.dart';
 
 class ActivityEditPage extends StatefulWidget {
   final Activity? activity;
+  final String? objId;
 
   const ActivityEditPage({
     Key? key,
     this.activity,
+    this.objId
   }) : super(key: key);
 
   @override
@@ -40,6 +43,8 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   String selectCategory = "";
   String selectPriority = "";
   String selectRecurrence = "";
+  
+  String? get objId => null;
 
   @override
   void initState() {
@@ -137,7 +142,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   void saveNewActivity() async {
     final isValid = formKey.currentState!.validate();
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
+    
     if (isValid) {
       final activity = Activity(
           user: firebaseAuth.currentUser!.uid,
@@ -156,12 +161,14 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
       final isEditing = widget.activity != null;
 
-      final ActivityProvider activityProvider = ActivityProvider();
+      final ActivityService activityService = ActivityService();
+      
 
       if (isEditing) {
-        // provider.editActivity(activity, widget.activity!);
+        final objId = widget.objId!;
+        activityService.editActivity(objId, activity);
       } else {
-        activityProvider.addActivity(activity);
+        activityService.addActivity(activity);
       }
 
       Navigator.of(context).pop();

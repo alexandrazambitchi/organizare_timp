@@ -3,9 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/button.dart';
+import '../../services/group_service.dart';
 
 class JoinGroupPage extends StatefulWidget {
-  const JoinGroupPage({super.key});
+
+  final String? objId;
+
+  const JoinGroupPage({
+    Key? key,
+    this.objId
+  }) : super(key: key);
 
   @override
   State<JoinGroupPage> createState() => _JoinGroupPageState();
@@ -14,28 +21,16 @@ class JoinGroupPage extends StatefulWidget {
 class _JoinGroupPageState extends State<JoinGroupPage> {
   final groupIdController = TextEditingController();
 
-  void joinGroup() async {
-    List<String>? members = [];
-    List<String> groups = [];
 
+  void joinGroup() async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    try {
-      members.add(firebaseAuth.currentUser!.uid);
-      await firestore.collection("groups").doc(groupIdController.text).update({
-        'members' : FieldValue.arrayUnion(members)
-      });
-      
-      groups.add(groupIdController.text);
-      await firestore.collection("users").doc(firebaseAuth.currentUser!.uid).update({
-        'groups' : FieldValue.arrayUnion(groups)
-      });
+    final GroupService groupService = GroupService();
 
-       Navigator.of(context).pop();
-    } catch (e){
-      print(e);
-    }
+
+
+    // groupService.joinGroup(groupIdController.text, );
   }
 
   @override

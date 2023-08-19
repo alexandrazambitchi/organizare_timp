@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:organizare_timp/provider/activity_provider.dart';
+import 'package:organizare_timp/services/activity_service.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -38,7 +38,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ActivityProvider>(context, listen: true);
+    final provider = Provider.of<ActivityService>(context, listen: true);
 
     // provider.getActivitiesFromDataBase(FirebaseAuth.instance.currentUser!.uid);
 

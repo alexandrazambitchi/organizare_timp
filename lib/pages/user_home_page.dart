@@ -4,7 +4,7 @@ import 'package:organizare_timp/model/activity.dart';
 import 'package:organizare_timp/pages/activity/activity_edit_page.dart';
 import 'package:flutter/material.dart';
 
-import '../provider/activity_provider.dart';
+import '../services/activity_service.dart';
 import 'activity/activity_view_page.dart';
 
 
@@ -19,7 +19,7 @@ class _UserHomePageState extends State<UserHomePage> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final ActivityProvider activityProvider = ActivityProvider();
+  final ActivityService activityService = ActivityService();
 
   Activity getActivityItem(Map<String, dynamic> activities) {
     return Activity(
@@ -53,7 +53,7 @@ class _UserHomePageState extends State<UserHomePage> {
 
   Widget userActivityList() {
     return StreamBuilder(
-        stream: activityProvider.getActivities(auth.currentUser!.uid),
+        stream: activityService.getActivities(auth.currentUser!.uid),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Text('error');
@@ -63,12 +63,12 @@ class _UserHomePageState extends State<UserHomePage> {
           }
           return ListView(
             children:
-                snapshot.data!.docs.map((doc) => activityItem(doc)).toList(),
+                snapshot.data!.docs.map((doc) => activityItem(doc, doc.id)).toList(),
           );
         });
   }
 
-  Widget activityItem(DocumentSnapshot documentSnapshot) {
+  Widget activityItem(DocumentSnapshot documentSnapshot, String objId) {
     Map<String, dynamic> data =
         documentSnapshot.data()! as Map<String, dynamic>;
 
@@ -78,7 +78,7 @@ class _UserHomePageState extends State<UserHomePage> {
             title: Text(data['activity_title']),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
-                      ActivityViewingPage(activity: getActivityItem(data)),
+                      ActivityViewingPage(activity: getActivityItem(data), objId: objId,),
                 )));
       } else {
         return const Text("Nu exista activitati");

@@ -4,7 +4,7 @@ import 'package:organizare_timp/pages/root_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:organizare_timp/pages/home_page.dart';
 import 'package:organizare_timp/pages/first_page.dart';
-import 'package:organizare_timp/provider/activity_provider.dart';
+import 'package:organizare_timp/services/activity_service.dart';
 import 'package:organizare_timp/services/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';

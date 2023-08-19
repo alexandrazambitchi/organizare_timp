@@ -1,20 +1,18 @@
-import 'dart:ffi';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:organizare_timp/pages/group/group_view_page.dart';
+import 'package:organizare_timp/services/group_service.dart';
 
 import '../../components/button.dart';
-import '../../model/activity.dart';
 import '../../model/group.dart';
 
 class GroupEditPage extends StatefulWidget {
   final Group? group;
+  final String? objId;
 
   const GroupEditPage({
     Key? key,
     this.group,
+    this.objId
   }) : super(key: key);
 
   @override
@@ -33,49 +31,33 @@ class _GroupEditPageState extends State<GroupEditPage> {
       final group = widget.group!;
 
       groupNameController.text = group.name;
-      descriptionController.text = group.description;
+      descriptionController.text = group.description!;
     }
   }
 
   void saveGroup() async {
-    List<String>? members = [];
-    List<Activity> activities = [];
-    List<String> groups = [];
-
+  
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+    
     final isEditing = widget.group != null;
 
-    try {
-      members.add(firebaseAuth.currentUser!.uid);
-      DocumentReference docReference = await firestore.collection("groups").add({
-        'name': groupNameController.text,
-        'leader': firebaseAuth.currentUser!.uid,
-        'description': descriptionController.text,
-        'members': members,
-        'activities': activities
-      });
-
-      Group newGroup = Group(
-        id: docReference.id, 
+    final newGroup = Group(
         name: groupNameController.text, 
         leader: firebaseAuth.currentUser!.uid, 
         description: descriptionController.text, 
-        members: members, 
-        activities: activities);
+        );
       
-      
-      groups.add(docReference.id);
-      await firestore.collection("users").doc(firebaseAuth.currentUser!.uid).update({
-        'groups' : FieldValue.arrayUnion(groups)
-      });
+    final GroupService groupService = GroupService();
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => GroupViewingPage(group: newGroup)));
-    } catch (e){
-      print(e);
+    if(isEditing) {
+      final objId = widget.objId!;
+      groupService.editGroup(objId, newGroup);
     }
+    else{
+      groupService.addGroup(newGroup);
+    }
+
+    Navigator.of(context).pop();
  
   }
 
