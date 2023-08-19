@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/components/button.dart';
+import 'package:organizare_timp/pages/group/group_edit_page.dart';
+import 'package:organizare_timp/pages/group/group_join_page.dart';
 import 'package:organizare_timp/pages/group/group_list_page.dart';
 
 class GroupPage extends StatefulWidget {
@@ -39,7 +41,7 @@ class _GroupPageState extends State<GroupPage> {
                           children: [
                             Button(
                               onTap: () {
-                                Navigator.pushNamed(context, '/creategroup');
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => GroupEditPage()));
                               },
                               text: "Creaza grup"
                               ),
@@ -48,8 +50,8 @@ class _GroupPageState extends State<GroupPage> {
                             ),
                             Button(
                               onTap: () {
-                                Navigator.pushNamed(context, '/joingroup'
-                                );
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => JoinGroupPage()));
+                            
                               },
                               text: "Alatura-te unui grup"),
                             Button(onTap: () {

@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdownfield2/dropdownfield2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/components/utils.dart';
 import 'package:organizare_timp/model/activity.dart';
-import 'package:provider/provider.dart';
 
 import '../../provider/activity_provider.dart';
 
@@ -149,7 +147,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
           endTime: endDate,
           category: selectCategory,
           priority: selectPriority,
-          recurency: "",
+          recurency: "daily",
           location: locationController.text,
           // recurrenceRule: 'FREQ=DAILY;INTERVAL=1;COUNT=10',
           // setRecurrency(selectRecurrence, recurrencyFreqController.text),
@@ -158,40 +156,15 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
       final isEditing = widget.activity != null;
 
-      final provider = Provider.of<ActivityProvider>(context, listen: false);
+      final ActivityProvider activityProvider = ActivityProvider();
 
       if (isEditing) {
-        provider.editActivity(activity, widget.activity!);
+        // provider.editActivity(activity, widget.activity!);
       } else {
-        provider.addActivity(activity);
+        activityProvider.addActivity(activity);
       }
 
-      List<String> activities = [];
-      try {
-        DocumentReference docReference =
-            await FirebaseFirestore.instance.collection('activities').add({
-          'user': firebaseAuth.currentUser!.uid,
-          'email': firebaseAuth.currentUser!.email,
-          'activity_title': titleController.text,
-          'description': detailsController.text,
-          'startTime': startDate,
-          'endTime': endDate,
-          'category': selectCategory,
-          'priority': selectPriority,
-          'location': locationController.text,
-          'recurency': "",
-          'isAllDay': isChecked, 
-        });
-        activities.add(docReference.id);
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(firebaseAuth.currentUser!.uid)
-            .update({'activities': FieldValue.arrayUnion(activities)});
-
-        Navigator.of(context).pop();
-      } catch (e) {
-        print(e);
-      }
+      Navigator.of(context).pop();
     }
   }
 

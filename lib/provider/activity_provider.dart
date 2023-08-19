@@ -1,64 +1,85 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../model/activity.dart';
 
 class ActivityProvider extends ChangeNotifier{
-  final List<Activity> activityList = [];
 
-  List<Activity> get activities => activityList;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  DateTime _selectedDate = DateTime.now();
+  // final List<Activity> activityList = [];
 
-  DateTime get selectedDate => _selectedDate;
+  // List<Activity> get activities => activityList;
 
-  void setDate(DateTime date) => _selectedDate = date;
+  // DateTime _selectedDate = DateTime.now();
 
-  List<Activity> get activitiesOfSelectedDate => activityList;
+  // DateTime get selectedDate => _selectedDate;
 
-  void getActivitiesFromDataBase(String userId) async {
+  // void setDate(DateTime date) => _selectedDate = date;
+
+  // List<Activity> get activitiesOfSelectedDate => activityList;
+
+  // void getActivitiesFromDataBase(String userId) async {
     
-    var collection = FirebaseFirestore.instance.collection("users");
+  //   var collection = FirebaseFirestore.instance.collection("users");
   
-    List<Activity> tempList = [];
-    Map<String, dynamic> tempElem;
-    var data = await collection.get();
+  //   List<Activity> tempList = [];
+  //   Map<String, dynamic> tempElem;
+  //   var data = await collection.get();
 
-    for (var element in data.docs) {
-      tempElem = element.data();
-      if(tempElem["user"] == userId){
-        addActivity(
-          Activity(
-            user: userId,
-            title: tempElem["activity_title"], 
-            description: tempElem["description"], 
-            startTime: tempElem["startTime"], 
-            endTime: tempElem["endTime"], 
-            category: tempElem["category"], 
-            priority: tempElem["priority"], 
-            location: tempElem["location"],
-            recurency: tempElem["recurency"]));
-      }
-    }
+  //   for (var element in data.docs) {
+  //     tempElem = element.data();
+  //     if(tempElem["user"] == userId){
+  //       addActivity(
+  //         Activity(
+  //           user: userId,
+  //           title: tempElem["activity_title"], 
+  //           description: tempElem["description"], 
+  //           startTime: tempElem["startTime"], 
+  //           endTime: tempElem["endTime"], 
+  //           category: tempElem["category"], 
+  //           priority: tempElem["priority"], 
+  //           location: tempElem["location"],
+  //           recurency: tempElem["recurency"]));
+  //     }
+  //   }
+  // }
+
+  Future<void> addActivity(Activity activity) async {
+    final String currentUserId = auth.currentUser!.uid;
+
+    Activity newActivity = Activity(user: currentUserId, 
+                                    title: activity.title, 
+                                    description: activity.description, 
+                                    startTime: activity.startTime, 
+                                    endTime: activity.endTime, 
+                                    category: activity.category, 
+                                    priority: activity.priority, 
+                                    location: activity.location, 
+                                    recurency: activity.recurency,);
+
+    await firestore.collection('user_activity').doc(currentUserId).collection('activities').add(newActivity.toMap());
+
+    // notifyListeners();
   }
 
-  void addActivity(Activity activity) {
-    activityList.add(activity);
-
-    notifyListeners();
+  Stream<QuerySnapshot> getActivities(String userId){
+    return firestore.collection('user_activity').doc(userId).collection('activities').orderBy('endTime', descending: false).snapshots();
   }
 
-  void deleteActivity(Activity activity) {
-    activityList.remove(activity);
+  // void deleteActivity(Activity activity) {
+  //   activityList.remove(activity);
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
-  void editActivity(Activity newActivity, Activity oldActivity){
-    final index = activityList.indexOf(oldActivity);
+  // void editActivity(Activity newActivity, Activity oldActivity){
+  //   final index = activityList.indexOf(oldActivity);
 
-    activityList[index] = newActivity;
+  //   activityList[index] = newActivity;
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 }

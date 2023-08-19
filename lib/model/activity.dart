@@ -13,7 +13,7 @@ class Activity{
   final Color activityColor;
   final bool isAllDay;
 
-  const Activity({
+  Activity({
     required this.user,
     required this.title,
     required this.description,
@@ -26,5 +26,20 @@ class Activity{
     this.activityColor = Colors.blue,
     this.isAllDay = false
   });
+
+  Map<String, dynamic> toMap(){
+    return {
+      'user': user,
+      'activity_title': title,
+      'description': description,
+      'startTime': startTime,
+      'endTime': endTime,
+      'category': category,
+      'priority': priority,
+      'location': location,
+      'recurency': recurency,
+      'isAllDay': isAllDay, 
+    };
+  }
 
 }

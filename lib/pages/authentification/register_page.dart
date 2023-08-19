@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:organizare_timp/components/square_tile.dart';
 import 'package:organizare_timp/components/textfields.dart';
 import 'package:organizare_timp/components/button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -22,59 +21,30 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // sign user in method
   void signUserUp() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
+    if (passwordController.text != passwordConfirmController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Parolele nu se potrivesc")));
+      return;
+    }
+
+    final authService = Provider.of<AuthService>(context, listen: false);
 
     try {
-      if (passwordController.text == passwordConfirmController.text) {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
-
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set({
-          'uid': userCredential.user!.uid,
-          'email': emailController.text,
-          'name': nameController.text
-        }, SetOptions(merge: true));
-      } else {
-        //show message passwords don't match
-        wrongMessage("Passwords don't match!");
-      }
-
-      Navigator.pop(context);
-      Navigator.pushNamed(context, '/homepage');
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      wrongMessage(e.code);
+      await authService.signUpWithEmailandPassword(
+        emailController.text,
+        passwordController.text,
+        nameController.text,
+      );
+      if (context.mounted) Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
   void signInGoogle() async {
     await AuthService().signInWithGoogle();
-    Navigator.pushNamed(context, '/homepage');
-  }
-
-  void wrongMessage(String message) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.deepOrange,
-            title: Center(
-                child: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
-            )),
-          );
-        });
+    if (context.mounted) Navigator.pop(context);
   }
 
   @override
@@ -194,7 +164,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
             Button(
               onTap: () {
-                Navigator.pushNamed(context, '/initpage');
+                // Navigator.pushNamed(context, '/initpage');
+                Navigator.pop(context);
               },
               text: 'Inapoi la pagina principala',
             ),

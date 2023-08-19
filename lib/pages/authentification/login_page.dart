@@ -1,15 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:organizare_timp/components/square_tile.dart';
 import 'package:organizare_timp/components/textfields.dart';
 import 'package:organizare_timp/components/button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   //final Function()? onTap;  required this.onTap
-  const LoginPage({super.key,});
+  const LoginPage({
+    super.key,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -22,53 +23,21 @@ class _LoginPageState extends State<LoginPage> {
 
   // sign user in method
   void signUserIn() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-
+    final authService = Provider.of<AuthService>(context, listen: false);
     try {
-      UserCredential userCredential = 
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-
-      FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
-          'uid' : userCredential.user!.uid,
-          'email': emailController.text
-        }, SetOptions(merge: true)
-        );  
-        
+      await authService.signInWithEmailAndPassword(
+          emailController.text, passwordController.text);
       if (context.mounted) Navigator.pop(context);
-      Navigator.pushNamed(context, '/homepage');
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      wrongMessage(e.code);
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
   void signInGoogle() async {
     await AuthService().signInWithGoogle();
-    Navigator.pushNamed(context, '/homepage');
-  }
+    if (context.mounted) Navigator.pop(context);
 
-  void wrongMessage(String message) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.deepOrange,
-            title: Center(
-                child: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
-            )),
-          );
-        });
   }
 
   @override
@@ -174,11 +143,10 @@ class _LoginPageState extends State<LoginPage> {
 
             Button(
               onTap: () {
-                Navigator.pushNamed(context, '/initpage');
+                Navigator.pop(context);
               },
               text: 'Inapoi la pagina principala',
             ),
-
           ]),
         ),
       )),

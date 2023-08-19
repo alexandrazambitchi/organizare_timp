@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:organizare_timp/pages/group/group_view_page.dart';
-import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/group.dart';
@@ -37,11 +35,6 @@ class _GroupListPageState extends State<GroupListPage> {
     setState(() {
       groups = tempList;
     });
-  }
-
-  void signOutUser() {
-    FirebaseAuth.instance.signOut();
-    Navigator.pushNamed(context, '/initpage');
   }
   @override
   Widget build(BuildContext context) {

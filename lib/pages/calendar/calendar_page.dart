@@ -7,6 +7,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import '../../model/activity.dart';
 import '../../model/activity_datasource.dart';
+import '../activity/activity_edit_page.dart';
 import 'task_page.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -39,16 +40,17 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     final provider = Provider.of<ActivityProvider>(context, listen: true);
 
-    provider.getActivitiesFromDataBase(FirebaseAuth.instance.currentUser!.uid);
+    // provider.getActivitiesFromDataBase(FirebaseAuth.instance.currentUser!.uid);
 
-    final activities = Provider.of<ActivityProvider>(context).activities;
-    getActivityList(activities);
+    // final activities = Provider.of<ActivityProvider>(context).activities;
+    // getActivityList(activities);
     return Scaffold(
       appBar: AppBar(
         actions: [
             IconButton(
               icon: const Icon(Icons.note_add_rounded),
-              onPressed: () =>  Navigator.pushNamed(context, '/activityeditpage'),
+              onPressed: () =>  Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ActivityEditPage(),))
             )
           ],
           
@@ -60,18 +62,18 @@ class _CalendarPageState extends State<CalendarPage> {
               mainAxisAlignment: MainAxisAlignment.center, 
               children: [
                 // getDataFromDatabase(),
-                SfCalendar(
-                  view: CalendarView.month,
-                  firstDayOfWeek: 1,
-                  dataSource: ActivityDataSource(activities),
-                  onLongPress: (details) {
-                    provider.setDate(details.date!);
+                // SfCalendar(
+                //   view: CalendarView.month,
+                //   firstDayOfWeek: 1,
+                //   dataSource: ActivityDataSource(activities),
+                //   onLongPress: (details) {
+                //     provider.setDate(details.date!);
 
-                    showModalBottomSheet(
-                      context: context, 
-                      builder: (context) => TasksWidget() );
-                  },
-                ),
+                //     showModalBottomSheet(
+                //       context: context, 
+                //       builder: (context) => TasksWidget() );
+                //   },
+                // ),
               ]
             )
           )

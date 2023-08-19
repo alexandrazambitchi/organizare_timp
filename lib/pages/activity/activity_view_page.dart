@@ -32,9 +32,9 @@ class ActivityViewingPage extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                  final provider = Provider.of<ActivityProvider>(context, listen: false);
+                  // final provider = Provider.of<ActivityProvider>(context, listen: false);
 
-                  provider.deleteActivity(activity);
+                  // provider.deleteActivity(activity);
                   Navigator.pop(context);
                 },),
 

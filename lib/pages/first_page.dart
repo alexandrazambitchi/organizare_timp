@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/components/button.dart';
+import 'package:organizare_timp/pages/authentification/login_page.dart';
+import 'package:organizare_timp/pages/authentification/register_page.dart';
 
 class FirstPage extends StatelessWidget {
   const FirstPage({super.key});
@@ -37,9 +39,9 @@ class FirstPage extends StatelessWidget {
             ),
 
             Button(
-              onTap: () {
-                Navigator.pushNamed(context, '/login');
-              },
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => LoginPage(),
+              )),
               text: 'Autentificare',
             ),
 
@@ -54,9 +56,9 @@ class FirstPage extends StatelessWidget {
               height: 25,
             ),
             Button(
-              onTap: () {
-                Navigator.pushNamed(context, '/register');
-              },
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => RegisterPage(),
+              )),
               text: 'Inregistrare',
             ),
           ])))),
