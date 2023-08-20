@@ -68,8 +68,8 @@ class AuthService extends ChangeNotifier {
         .collection('users')
         .doc(userCredential.user!.uid)
         .set({'uid': userCredential.user!.uid, 
-              'email': googleUser!.email,
-              'name': googleUser!.displayName},
+              'email': googleUser.email,
+              'name': googleUser.displayName},
             SetOptions(merge: true));
     return userCredential;
   }

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:organizare_timp/model/activity.dart';
 import 'package:organizare_timp/pages/activity/activity_edit_page.dart';
 import 'package:organizare_timp/services/activity_service.dart';
-import 'package:provider/provider.dart';
 
 class ActivityViewingPage extends StatelessWidget {
   final Activity activity;
@@ -18,52 +17,51 @@ class ActivityViewingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: CloseButton(),
+          leading: const CloseButton(),
         ),
         body: ListView(
-          padding: EdgeInsets.all(32),
+          padding: const EdgeInsets.all(32),
           children: <Widget>[
             Text(
               activity.title,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
             buildDateTime(activity),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text(
               activity.description,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             Text(
               activity.category,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             Text(
               activity.priority,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             Text(
               activity.location,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     final activityService = ActivityService();
                     activityService.deleteActivity(objId);
-                    // provider.deleteActivity(activity);
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                 ),
                 const SizedBox(
                   width: 25,
                 ),
                 IconButton(
-                  icon: Icon(Icons.edit),
+                  icon: const Icon(Icons.edit),
                   onPressed: () =>
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => ActivityEditPage(

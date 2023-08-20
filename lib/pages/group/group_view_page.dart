@@ -1,56 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:organizare_timp/model/activity.dart';
-import 'package:organizare_timp/pages/activity/activity_edit_page.dart';
-import 'package:organizare_timp/services/activity_service.dart';
-import 'package:provider/provider.dart';
+import 'package:organizare_timp/services/group_service.dart';
 
 import '../../model/group.dart';
 import 'group_edit_page.dart';
+import 'group_list_page.dart';
 
 class GroupViewingPage extends StatelessWidget {
   final Group group;
 
   final String objId;
 
-  const GroupViewingPage({Key? key, required this.group, required this.objId}) : super(key: key);
+  const GroupViewingPage({Key? key, required this.group, required this.objId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: CloseButton(),
+        appBar: AppBar(
+          leading: BackButton(),
         ),
-      body: ListView(
-        padding: EdgeInsets.all(32),
-        children: <Widget>[
-          Text(group.name, style: TextStyle(fontSize: 24),),
-          Text(group.description!, style: TextStyle(fontSize: 16),),
-          Text(group.leader, style: TextStyle(fontSize: 16),),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {}
-                //   final provider = Provider.of<ActivityProvider>(context, listen: false);
+        body: ListView(
+          padding: const EdgeInsets.all(32),
+          children: <Widget>[
+            Text(
+              group.name,
+              style: const TextStyle(fontSize: 24),
+            ),
+            Text(
+              group.description!,
+              style: const TextStyle(fontSize: 16),
+            ),
+            Text(
+              group.leader,
+              style: const TextStyle(fontSize: 16),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    final groupService = GroupService();
 
-                //   provider.deleteActivity(activity);
-                //   Navigator.pop(context);}
-                ,),
-
-              const SizedBox(
-                width: 25,
-              ),
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () =>   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => GroupEditPage(group: group,)))
-                ,),
-              
-            ],
-          ),
-        ],
-      )
-    );    
+                    groupService.deleteGroup(objId);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                const SizedBox(
+                  width: 25,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () =>
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => GroupEditPage(
+                                group: group,
+                                objId: objId,
+                              ))),
+                ),
+              ],
+            ),
+          ],
+        ));
   }
 }

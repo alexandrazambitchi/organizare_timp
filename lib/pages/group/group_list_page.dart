@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:organizare_timp/pages/group/group_page.dart';
 import 'package:organizare_timp/pages/group/group_view_page.dart';
 import 'package:flutter/material.dart';
+import 'package:organizare_timp/pages/home_page.dart';
 import 'package:organizare_timp/services/group_service.dart';
 
 import '../../model/group.dart';
@@ -21,6 +23,7 @@ class _GroupListPageState extends State<GroupListPage> {
 
   Group getGroupItem(Map<String, dynamic> groups) {
     return Group(
+      id: groups["id"],
       name: groups["name"],
       leader: groups["leader"],
       description: groups["description"],
@@ -32,29 +35,32 @@ class _GroupListPageState extends State<GroupListPage> {
   var collection = FirebaseFirestore.instance.collection("groups");
   late List<Map<String, dynamic>> groups;
 
-  void getGroupList() async {
-    List<Map<String, dynamic>> tempList = [];
-    var data = await collection.get();
-    String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  // void getGroupList() async {
+  //   List<Map<String, dynamic>> tempList = [];
+  //   var data = await collection.get();
+  //   String currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
-    for (var element in data.docs) {
-      List<String> membersList = List<String>.from(element.data()['members']);
-      if (membersList.contains(currentUserId)) {
-        tempList.add(element.data());
-      }
-    }
+  //   for (var element in data.docs) {
+  //     List<String> membersList = List<String>.from(element.data()['members']);
+  //     if (membersList.contains(currentUserId)) {
+  //       tempList.add(element.data());
+  //     }
+  //   }
 
-    setState(() {
-      groups = tempList;
-    });
-  }
+  //   setState(() {
+  //     groups = tempList;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
-    getGroupList();
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
+        leading: BackButton(
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  )),
+        ),
       ),
       body: userGroupsList(),
     );
@@ -81,16 +87,16 @@ class _GroupListPageState extends State<GroupListPage> {
     Map<String, dynamic> data =
         documentSnapshot.data()! as Map<String, dynamic>;
 
-    if (auth.currentUser!.uid == data['user']) {
+    // if (auth.currentUser!.uid == data['user']) {
         return ListTile(
             title: Text(data['name']),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
                       GroupViewingPage(group: getGroupItem(data), objId: objId,),
                 )));
-    } else {
-      return Container();
-    }
+    // } else {
+    //   return Container();
+    // }
   }
 
 }

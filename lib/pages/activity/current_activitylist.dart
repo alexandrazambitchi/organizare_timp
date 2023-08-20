@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/model/activity.dart';
-import 'package:organizare_timp/model/group.dart';
 
 class CurrentActivityList extends ChangeNotifier {
 
@@ -28,15 +27,5 @@ class CurrentActivityList extends ChangeNotifier {
         print(e);
       }
       return [];
-  }
-
-  void updateStateFromDatabase(String userId) async {
-    try{
-      //get group info
-      List<Activity> currentUserActivities = await getActivityList(userId) as List<Activity>;
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
   }
 }
