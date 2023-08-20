@@ -38,7 +38,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ActivityService>(context, listen: true);
+    // final provider = Provider.of<ActivityService>(context, listen: true);
 
     // provider.getActivitiesFromDataBase(FirebaseAuth.instance.currentUser!.uid);
 

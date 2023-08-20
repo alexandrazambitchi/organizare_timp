@@ -12,18 +12,28 @@ class GroupService extends ChangeNotifier {
     final String currentUserId = auth.currentUser!.uid;
 
     Group newGroup = Group(
-        name: group.name, leader: group.leader, description: group.description);
+      name: group.name,
+      leader: group.leader,
+      description: group.description,
+      members: [currentUserId],
+    );
 
-    DocumentReference docReference = await firestore.collection("groups").add(newGroup.toMap());
-    
+    DocumentReference docReference =
+        await firestore.collection("groups").add(newGroup.toMap());
+
     newGroup.id = docReference.id;
 
-    await firestore.collection("groups").doc(docReference.id).set(newGroup.toMap(), SetOptions(merge: true));
+    await firestore
+        .collection("groups")
+        .doc(docReference.id)
+        .set(newGroup.toMap(), SetOptions(merge: true));
 
     await firestore
         .collection('user_group')
         .doc(currentUserId)
-        .collection('groups').doc(docReference.id).set(newGroup.toMap(), SetOptions(merge: true));
+        .collection('groups')
+        .doc(docReference.id)
+        .set(newGroup.toMap(), SetOptions(merge: true));
   }
 
   Stream<QuerySnapshot> getGroups(String userId) {
@@ -69,11 +79,19 @@ class GroupService extends ChangeNotifier {
     DocumentSnapshot<Map<String, dynamic>> localGroup =
         await firestore.collection('groups').doc(groupId).get();
 
-     Group getGroup = Group(
+    Group getGroup = Group(
         id: localGroup["id"],
         name: localGroup["name"],
         leader: localGroup["leader"],
-        description: localGroup["description"]);
+        description: localGroup["description"],
+        members: List<String>.from(localGroup["members"]));
+
+    getGroup.members?.add(currentUserId);
+
+    await firestore
+        .collection('groups')
+        .doc(groupId)
+        .set(getGroup.toMap(), SetOptions(merge: true));
 
     await firestore
         .collection('user_group')

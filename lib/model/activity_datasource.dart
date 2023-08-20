@@ -23,10 +23,7 @@ class ActivityDataSource extends CalendarDataSource {
   @override
   Color getColor(int index) => getActivity(index).activityColor;
 
-  @override
-  bool isAllDay(int index) => getActivity(index).isAllDay;
-
-  String getCategory(int index) => getActivity(index).category;
+  String? getCategory(int index) => getActivity(index).category;
 
 
 }

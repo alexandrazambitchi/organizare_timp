@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:organizare_timp/model/activity.dart';
-import 'package:organizare_timp/pages/activity/activity_edit_page.dart';
-import 'package:organizare_timp/services/activity_service.dart';
+import 'package:organizare_timp/pages/group_activity/group_activity_edit_page.dart';
 
-class ActivityViewingPage extends StatelessWidget {
-  final Activity activity;
+import '../../model/group_activity.dart';
+import '../../services/group_activity_service.dart';
+
+class GroupActivityViewingPage extends StatelessWidget {
+  final String groupId;
+
+  final GroupActivity groupActivity;
 
   final String objId;
 
-  const ActivityViewingPage(
-      {Key? key, required this.activity, required this.objId})
+  const GroupActivityViewingPage(
+      {Key? key, required this.groupActivity, required this.objId, required this.groupId,})
       : super(key: key);
 
   @override
@@ -23,27 +26,23 @@ class ActivityViewingPage extends StatelessWidget {
           padding: const EdgeInsets.all(32),
           children: <Widget>[
             Text(
-              activity.title,
+              groupActivity.subject,
               style: const TextStyle(fontSize: 24),
             ),
-            buildDateTime(activity),
+            buildDateTime(groupActivity),
             const SizedBox(
               height: 10,
             ),
             Text(
-              activity.description ?? 'Fara descriere',
+              groupActivity.notes ?? 'Fara descriere',
               style: const TextStyle(fontSize: 16),
             ),
             Text(
-              activity.category ?? 'Fara categorie',
+              groupActivity.priority ?? 'Fara prioritate',
               style: const TextStyle(fontSize: 16),
             ),
             Text(
-              activity.priority ?? 'Fara prioritate',
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              activity.location ?? 'Fara locatie',
+              groupActivity.location ?? 'Fara locatie',
               style: const TextStyle(fontSize: 16),
             ),
             Row(
@@ -52,8 +51,8 @@ class ActivityViewingPage extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    final activityService = ActivityService();
-                    activityService.deleteActivity(objId);
+                    final groupActivityService = GroupActivityService();
+                    groupActivityService.deleteActivity(groupId, objId);
                     Navigator.of(context).pop();
                   },
                 ),
@@ -64,8 +63,9 @@ class ActivityViewingPage extends StatelessWidget {
                   icon: const Icon(Icons.edit),
                   onPressed: () =>
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => ActivityEditPage(
-                                activity: activity,
+                          builder: (context) => GroupActivityEditPage(
+                                groupId:  groupId,
+                                groupActivity: groupActivity,
                                 objId: objId,
                               ))),
                 ),
@@ -75,12 +75,12 @@ class ActivityViewingPage extends StatelessWidget {
         ));
   }
 
-  Widget buildDateTime(Activity activity) {
+  Widget buildDateTime(GroupActivity groupActivity) {
     return Column(
       children: [
         buildDate(
-            activity.isAllDay ? 'Toata ziua' : 'De la ', activity.startTime),
-        if (!activity.isAllDay) buildDate('Pana la ', activity.endTime)
+            groupActivity.isAllDay ? 'Toata ziua' : 'De la ', groupActivity.startTime),
+        if (!groupActivity.isAllDay) buildDate('Pana la ', groupActivity.endTime)
       ],
     );
   }

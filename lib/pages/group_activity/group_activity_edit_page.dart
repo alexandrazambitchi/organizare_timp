@@ -1,26 +1,26 @@
 import 'package:dropdownfield2/dropdownfield2.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/components/utils.dart';
-import 'package:organizare_timp/model/activity.dart';
+import '../../model/group_activity.dart';
+import '../../services/group_activity_service.dart';
 
-import '../../services/activity_service.dart';
-
-class ActivityEditPage extends StatefulWidget {
-  final Activity? activity;
+class GroupActivityEditPage extends StatefulWidget {
+  final GroupActivity? groupActivity;
   final String? objId;
+  final String groupId;
 
-  const ActivityEditPage({
+  const GroupActivityEditPage({
     Key? key,
-    this.activity,
-    this.objId
+    this.groupActivity,
+    this.objId,
+    required this.groupId
   }) : super(key: key);
 
   @override
-  State<ActivityEditPage> createState() => _ActivityEditPageState();
+  State<GroupActivityEditPage> createState() => _GroupActivityEditPageState();
 }
 
-class _ActivityEditPageState extends State<ActivityEditPage> {
+class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
   final formKey = GlobalKey<FormState>();
   late DateTime startDate;
   late DateTime endDate;
@@ -30,16 +30,13 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
   final titleController = TextEditingController();
   final locationController = TextEditingController();
-  final categoryController = TextEditingController();
   final priorityController = TextEditingController();
   final recurrencyController = TextEditingController();
   final recurrencyFreqController = TextEditingController();
   final detailsController = TextEditingController();
 
-  List<String> categories = ["Serviciu", "Casa", "Personal", "Timp liber"];
   List<String> priorities = ["Important", "Mediu", "Scazut"];
   List<String> recurrencyOptions = ["Zilnic", "Saptamanal", "Lunar"];
-  String selectCategory = "";
   String selectPriority = "";
   String selectRecurrence = "";
   
@@ -49,79 +46,34 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   void initState() {
     super.initState();
 
-    if (widget.activity == null) {
+    if (widget.groupActivity == null) {
       startDate = DateTime.now();
       endDate = DateTime.now().add(const Duration(hours: 1));
     } else {
-      final activity = widget.activity!;
+      final activity = widget.groupActivity!;
 
-      titleController.text = activity.title;
+      titleController.text = activity.subject;
       startDate = activity.startTime;
       endDate = activity.endTime;
-      categoryController.text = activity.category!;
       priorityController.text = activity.priority!;
-      detailsController.text = activity.description!;
-      isChecked = activity.isAllDay!;
+      detailsController.text = activity.notes!;
+      isChecked = activity.isAllDay;
     }
   }
 
-  Color setActivityColor(String category, String priority) {
+  Color setActivityColor(String priority) {
     Color activityColor = Colors.blue;
-    switch (category) {
-      case 'Serviciu':
-        switch (priority) {
+    switch (priority) {
           case 'Important':
-            activityColor = Colors.amber.shade600;
+            activityColor = Colors.blue.shade600;
             break;
           case 'Mediu':
-            activityColor = Colors.amber.shade300;
+            activityColor = Colors.blue.shade300;
             break;
           case 'Scazut':
-            activityColor = Colors.amber.shade100;
+            activityColor = Colors.blue.shade100;
             break;
         }
-        break;
-      case 'Casa':
-        switch (priority) {
-          case 'Important':
-            activityColor = Colors.teal.shade600;
-            break;
-          case 'Mediu':
-            activityColor = Colors.teal.shade300;
-            break;
-          case 'Scazut':
-            activityColor = Colors.teal.shade100;
-            break;
-        }
-        break;
-      case 'Personal':
-        switch (priority) {
-          case 'Important':
-            activityColor = Colors.indigo.shade500;
-            break;
-          case 'Mediu':
-            activityColor = Colors.indigo.shade300;
-            break;
-          case 'Scazut':
-            activityColor = Colors.indigo.shade100;
-            break;
-        }
-        break;
-      case 'Timp liber':
-        switch (priority) {
-          case 'Important':
-            activityColor = Colors.purple.shade600;
-            break;
-          case 'Mediu':
-            activityColor = Colors.purple.shade300;
-            break;
-          case 'Scazut':
-            activityColor = Colors.purple.shade100;
-            break;
-        }
-        break;
-    }
-
     return activityColor;
   }
 
@@ -140,34 +92,29 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
   void saveNewActivity() async {
     final isValid = formKey.currentState!.validate();
-    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     
     if (isValid) {
-      final activity = Activity(
-          user: firebaseAuth.currentUser!.uid,
-          title: titleController.text,
-          description: detailsController.text,
-          startTime: startDate,
-          endTime: endDate,
-          category: selectCategory,
-          priority: selectPriority,
-          recurency: "daily",
-          location: locationController.text,
-          // recurrenceRule: 'FREQ=DAILY;INTERVAL=1;COUNT=10',
-          // setRecurrency(selectRecurrence, recurrencyFreqController.text),
-          activityColor: setActivityColor(selectCategory, selectPriority),
-          isAllDay: false);
+      final groupActivity = GroupActivity(
+        subject: titleController.text,
+        startTime: startDate,
+        endTime: endDate,
+        notes: detailsController.text,
+        location: locationController.text,
+        recurrenceRule: setRecurrency(recurrencyController.text, recurrencyFreqController.text),
+        isAllDay: isChecked,
+        priority: selectPriority,
+      );
 
-      final isEditing = widget.activity != null;
+      final isEditing = widget.groupActivity != null;
 
-      final ActivityService activityService = ActivityService();
+      final GroupActivityService groupActivityService = GroupActivityService();
       
 
       if (isEditing) {
         final objId = widget.objId!;
-        activityService.editActivity(objId, activity);
+        groupActivityService.editActivity(widget.groupId, objId, groupActivity);
       } else {
-        activityService.addActivity(activity);
+        groupActivityService.addActivity(widget.groupId, groupActivity);
       }
 
       Navigator.of(context).pop();
@@ -220,18 +167,6 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                   height: 25,
                 ),
 
-                //category
-                DropDownField(
-                  controller: categoryController,
-                  hintText: "Categorie",
-                  enabled: true,
-                  items: categories,
-                  onValueChanged: (value) {
-                    setState(() {
-                      selectCategory = value;
-                    });
-                  },
-                ),
                 const SizedBox(
                   height: 25,
                 ),
@@ -258,32 +193,31 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                 const SizedBox(
                   height: 25,
                 ),
-                // setRecurency(),
                 // Row(
                 //   children: [
-                //     DropDownField(
-                //       controller: recurrencyController,
-                //       hintText: "Recurenta",
-                //       enabled: true,
-                //       items: recurrencyOptions,
-                //       onValueChanged: (value) {
-                //         setState(() {
-                //           selectRecurrence = value;
-                //         });
-                //       },
-                //     ),
-                //     // TextFormField(
-                //     //   style: TextStyle(fontSize: 16),
-                //     //   decoration: InputDecoration(
-                //     //     border: UnderlineInputBorder(),
-                //     //     hintText: 'Frecventa recurentei'
-                //     //   ),
-                //     //   controller: recurrencyFreqController,
-                //     // )
-                //   ],
-                // ),
-              ],
-            ),
+                    DropDownField(
+                      controller: recurrencyController,
+                      hintText: "Recurenta",
+                      enabled: true,
+                      items: recurrencyOptions,
+                      onValueChanged: (value) {
+                        setState(() {
+                          selectRecurrence = value;
+                        });
+                      },
+                    ),
+                    TextFormField(
+                      style: const TextStyle(fontSize: 16),
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(),
+                        hintText: 'Frecventa recurentei'
+                      ),
+                      controller: recurrencyFreqController,
+                    )
+                  ],
+                ),
+              // ],
+            // ),
           ),
         ));
   }

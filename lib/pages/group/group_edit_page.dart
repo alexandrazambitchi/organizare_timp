@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/pages/group/group_list_page.dart';
@@ -33,9 +34,10 @@ class _GroupEditPageState extends State<GroupEditPage> {
     }
   }
 
-  void saveGroup() async {
-    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
+  void saveGroup() async {
     final isEditing = widget.group != null;
 
     final newGroup = Group(
@@ -89,6 +91,12 @@ class _GroupEditPageState extends State<GroupEditPage> {
                   ),
                   const SizedBox(
                     height: 25,
+                  ),
+                  TextFormField(
+                    controller: descriptionController,
+                    decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.group),
+                        hintText: "Descrierea grupului"),
                   ),
                   Button(
                     text: "Salveaza grup",

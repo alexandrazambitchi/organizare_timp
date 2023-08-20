@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class Activity{
-  final String user;
-  final String title;
-  final String description;
-  final DateTime startTime;
-  final DateTime endTime;
-  final String category;
-  final String priority;
-  final String location;
-  final String recurency;
-  final Color activityColor;
-  final bool isAllDay;
+  String user;
+  String title;
+  String? description;
+  DateTime startTime;
+  DateTime endTime;
+  String? category;
+  String? priority;
+  String? location;
+  String? recurency;
+  Color activityColor;
+  bool isAllDay;
 
   Activity({
     required this.user,

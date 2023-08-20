@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:organizare_timp/components/button.dart';
+import 'package:organizare_timp/pages/group_activity/group_activities_day_view_page.dart';
+import 'package:organizare_timp/pages/group_activity/group_activity_edit_page.dart';
 import 'package:organizare_timp/services/group_service.dart';
 
 import '../../model/group.dart';
 import 'group_edit_page.dart';
-import 'group_list_page.dart';
 
 class GroupViewingPage extends StatelessWidget {
   final Group group;
@@ -34,9 +36,22 @@ class GroupViewingPage extends StatelessWidget {
               group.leader,
               style: const TextStyle(fontSize: 16),
             ),
+            Button(
+                onTap: () => Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            GroupActivityDayViewPage(groupId: objId))),
+                text: "Vezi activitatile de azi"),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                IconButton(
+                    onPressed: () =>
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => GroupActivityEditPage(
+                                  groupId: objId,
+                                ))),
+                    icon: const Icon(Icons.add)),
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
