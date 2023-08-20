@@ -60,13 +60,13 @@ class _GroupListPageState extends State<GroupListPage> {
           }
           return ListView(
             children: snapshot.data!.docs
-                .map((doc) => groupItem(doc, doc.id))
+                .map((doc) => groupItem(doc))
                 .toList(),
           );
         });
   }
 
-  Widget groupItem(DocumentSnapshot documentSnapshot, String objId) {
+  Widget groupItem(DocumentSnapshot documentSnapshot) {
     Map<String, dynamic> data =
         documentSnapshot.data()! as Map<String, dynamic>;
 
@@ -75,7 +75,7 @@ class _GroupListPageState extends State<GroupListPage> {
         onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => GroupViewingPage(
                 group: getGroupItem(data),
-                objId: objId,
+                objId: data['id'],
               ),
             )));
   }

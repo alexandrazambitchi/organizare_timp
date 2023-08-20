@@ -55,6 +55,8 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
       titleController.text = activity.subject;
       startDate = activity.startTime;
       endDate = activity.endTime;
+      locationController.text = activity.location!;
+      recurrencyController.text = activity.recurrenceRule!;
       priorityController.text = activity.priority!;
       detailsController.text = activity.notes!;
       isChecked = activity.isAllDay;
@@ -112,6 +114,7 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
 
       if (isEditing) {
         final objId = widget.objId!;
+        groupActivity.groupId = widget.groupId;
         groupActivityService.editActivity(widget.groupId, objId, groupActivity);
       } else {
         groupActivityService.addActivity(widget.groupId, groupActivity);

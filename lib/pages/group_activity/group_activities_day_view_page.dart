@@ -28,15 +28,15 @@ class _GroupActivityDayViewPageState extends State<GroupActivityDayViewPage> {
 
   GroupActivity getActivityItem(Map<String, dynamic> activities) {
     return GroupActivity(
-        groupId: activities["groupId"],
-        subject: activities["subject"],
-        startTime: activities["startTime"].toDate(),
-        endTime: activities["endTime"].toDate(),
-        location: activities["location"],
-        recurrenceRule: activities["recurency"],
-        isAllDay: activities["isAllDay"],
-        notes: activities["notes"],
-        priority: activities["priority"],
+        groupId: activities['groupId'],
+        subject: activities['activity_title'],
+        startTime: activities['startTime'].toDate(),
+        endTime: activities['endTime'].toDate(),
+        location: activities['location'],
+        recurrenceRule: activities['recurency'],
+        isAllDay: activities['isAllDay'],
+        notes: activities['description'],
+        priority: activities['priority'],
     );
   }
 
@@ -79,10 +79,10 @@ class _GroupActivityDayViewPageState extends State<GroupActivityDayViewPage> {
         documentSnapshot.data()! as Map<String, dynamic>;
 
     if (widget.groupId == data['groupId']) {
-      // final dateStartFormated = DateFormat('d/M/y').format(data['startTime']);
-      // final dateEndFormated = DateFormat('d/M/y').format(data['endTime']);
-      // final now = DateFormat('d/M/y').format(DateTime.now());
-      // if ((dateStartFormated == now) || (dateEndFormated == now)) {
+      final dateStartFormated = DateFormat('d/M/y').format(data['startTime'].toDate());
+      final dateEndFormated = DateFormat('d/M/y').format(data['endTime'].toDate());
+      final now = DateFormat('d/M/y').format(DateTime.now());
+      if ((dateStartFormated == now) || (dateEndFormated == now)) {
         return ListTile(
             title: Text(data['activity_title']),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
@@ -92,9 +92,10 @@ class _GroupActivityDayViewPageState extends State<GroupActivityDayViewPage> {
                     groupId: data['groupId'],
                   ),
                 )));
-      // } else {
-      //   return const Text("Nu exista activitati");
-      // }
+      //GroupActivity().fromMap(data) 
+      } else {
+        return const Text("Nu exista activitati");
+      }
     } else {
       return Container();
     }

@@ -96,8 +96,7 @@ class GroupService extends ChangeNotifier {
     await firestore
         .collection('user_group')
         .doc(currentUserId)
-        .collection('groups')
-        .add(getGroup.toMap());
+        .collection('groups').doc(groupId).set(getGroup.toMap(), SetOptions(merge: true));
   }
 
   Future<Group> findGroup(String groupId) async {
