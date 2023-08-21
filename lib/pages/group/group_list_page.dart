@@ -22,11 +22,11 @@ class _GroupListPageState extends State<GroupListPage> {
 
   Group getGroupItem(Map<String, dynamic> groups) {
     return Group(
-      id: groups["id"],
-      name: groups["name"],
-      leader: groups["leader"],
-      description: groups["description"],
-    );
+        id: groups["id"],
+        name: groups["name"],
+        leader: groups["leader"],
+        description: groups["description"],
+        members: List<String>.from(groups["members"]));
   }
 
   int selectedIndex = 0;
@@ -59,9 +59,7 @@ class _GroupListPageState extends State<GroupListPage> {
             return const Text('loading...');
           }
           return ListView(
-            children: snapshot.data!.docs
-                .map((doc) => groupItem(doc))
-                .toList(),
+            children: snapshot.data!.docs.map((doc) => groupItem(doc)).toList(),
           );
         });
   }

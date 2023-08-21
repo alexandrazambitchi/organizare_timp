@@ -73,4 +73,6 @@ class AuthService extends ChangeNotifier {
             SetOptions(merge: true));
     return userCredential;
   }
+
+  
 }

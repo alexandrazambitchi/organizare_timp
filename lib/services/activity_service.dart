@@ -29,6 +29,7 @@ class ActivityService extends ChangeNotifier{
   Stream<QuerySnapshot> getActivities(String userId){
     return firestore.collection('user_activity').doc(userId).collection('activities').orderBy('endTime', descending: false).snapshots();
   }
+  
   Future<void> deleteActivity(String activityId) async {
     final String currentUserId = auth.currentUser!.uid;
 

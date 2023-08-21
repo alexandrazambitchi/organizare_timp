@@ -47,30 +47,39 @@ class GroupService extends ChangeNotifier {
   Future<void> deleteGroup(String groupId) async {
     final String currentUserId = auth.currentUser!.uid;
 
+    Group getGroup = await findGroup(groupId);
+
     await firestore.collection('groups').doc(groupId).delete();
 
-    await firestore
+    if(getGroup.members.isNotEmpty){
+      for (var member in getGroup.members){
+        await firestore
         .collection('user_group')
-        .doc(currentUserId)
+        .doc(member)
         .collection('groups')
-        .doc(groupId)
-        .delete();
+        .doc(groupId).delete();
+
+    }
+    }
   }
 
   Future<void> editGroup(String groupId, Group newGroup) async {
-    final String currentUserId = auth.currentUser!.uid;
+    newGroup.id = groupId;
 
     await firestore
         .collection('groups')
         .doc(groupId)
-        .set(newGroup.toMap(), SetOptions(merge: true));
+        // .update(newGroup.toMap());
+        .set(newGroup.toMap());
 
-    await firestore
+
+    for (var member in newGroup.members){
+        await firestore
         .collection('user_group')
-        .doc(currentUserId)
+        .doc(member)
         .collection('groups')
-        .doc(groupId)
-        .set(newGroup.toMap(), SetOptions(merge: true));
+        .doc(groupId).set(newGroup.toMap());
+    }
   }
 
   Future<void> joinGroup(String groupId) async {
@@ -86,27 +95,65 @@ class GroupService extends ChangeNotifier {
         description: localGroup["description"],
         members: List<String>.from(localGroup["members"]));
 
-    getGroup.members?.add(currentUserId);
+    getGroup.members.add(currentUserId);
 
     await firestore
         .collection('groups')
         .doc(groupId)
-        .set(getGroup.toMap(), SetOptions(merge: true));
+        .set(getGroup.toMap());
 
-    await firestore
+    for (var member in getGroup.members){
+        await firestore
         .collection('user_group')
-        .doc(currentUserId)
-        .collection('groups').doc(groupId).set(getGroup.toMap(), SetOptions(merge: true));
+        .doc(member)
+        .collection('groups')
+        .doc(groupId).set(getGroup.toMap());
+    }
   }
 
   Future<Group> findGroup(String groupId) async {
     DocumentSnapshot<Map<String, dynamic>> localGroup =
         await firestore.collection('groups').doc(groupId).get();
-
+  
     return Group(
         id: localGroup["id"],
         name: localGroup["name"],
         leader: localGroup["leader"],
-        description: localGroup["description"]);
+        description: localGroup["description"],
+        members: List<String>.from(localGroup['members']));
+  }
+
+  Future<void> leaveGroup(String groupId) async {
+    final String currentUserId = auth.currentUser!.uid;
+
+    DocumentSnapshot<Map<String, dynamic>> localGroup =
+        await firestore.collection('groups').doc(groupId).get();
+
+    Group getGroup = Group(
+        id: localGroup["id"],
+        name: localGroup["name"],
+        leader: localGroup["leader"],
+        description: localGroup["description"],
+        members: List<String>.from(localGroup["members"]));
+
+    getGroup.members.remove(currentUserId);
+
+    await firestore
+        .collection('groups')
+        .doc(groupId)
+        .set(getGroup.toMap());
+
+    await firestore
+        .collection('user_group')
+        .doc(currentUserId)
+        .collection('groups').doc(groupId).delete();
+
+    for (var member in getGroup.members){
+        await firestore
+        .collection('user_group')
+        .doc(member)
+        .collection('groups')
+        .doc(groupId).set(getGroup.toMap());
+    }
   }
 }

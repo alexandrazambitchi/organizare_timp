@@ -3,14 +3,14 @@ class Group {
   String name;
   String leader;
   String? description;
-  List<String>? members;
+  List<String> members;
 
   Group({
     this.id,
     required this.name,
     required this.leader, 
     this.description,
-    this.members
+    required this.members
   });
 
   Map<String, dynamic> toMap(){

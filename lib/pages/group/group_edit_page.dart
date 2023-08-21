@@ -41,15 +41,17 @@ class _GroupEditPageState extends State<GroupEditPage> {
     final isEditing = widget.group != null;
 
     final newGroup = Group(
-      name: groupNameController.text,
-      leader: firebaseAuth.currentUser!.uid,
-      description: descriptionController.text,
-    );
+        name: groupNameController.text,
+        leader: firebaseAuth.currentUser!.uid,
+        description: descriptionController.text,
+        members: [firebaseAuth.currentUser!.uid]);
 
     final GroupService groupService = GroupService();
 
     if (isEditing) {
       final objId = widget.objId!;
+      List<String>? oldMembers = widget.group?.members;
+      newGroup.members = oldMembers!;
       groupService.editGroup(objId, newGroup);
     } else {
       groupService.addGroup(newGroup);
@@ -64,10 +66,9 @@ class _GroupEditPageState extends State<GroupEditPage> {
     return Scaffold(
         appBar: AppBar(
           leading: CloseButton(
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => GroupPage(),
-                  ))
-          ),
+                  ))),
         ),
         body: Column(
           children: <Widget>[

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import '../services/activity_service.dart';
 import 'activity/activity_view_page.dart';
 
-
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
 
@@ -62,8 +61,9 @@ class _UserHomePageState extends State<UserHomePage> {
             return const Text('loading...');
           }
           return ListView(
-            children:
-                snapshot.data!.docs.map((doc) => activityItem(doc, doc.id)).toList(),
+            children: snapshot.data!.docs
+                .map((doc) => activityItem(doc, doc.id))
+                .toList(),
           );
         });
   }
@@ -77,8 +77,10 @@ class _UserHomePageState extends State<UserHomePage> {
         return ListTile(
             title: Text(data['activity_title']),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      ActivityViewingPage(activity: getActivityItem(data), objId: objId,),
+                  builder: (context) => ActivityViewingPage(
+                    activity: getActivityItem(data),
+                    objId: objId,
+                  ),
                 )));
       } else {
         return const Text("Nu exista activitati");

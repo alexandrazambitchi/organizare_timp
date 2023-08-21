@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:organizare_timp/pages/group/group_page.dart';
 import 'package:organizare_timp/pages/settings_page.dart';
@@ -13,6 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   int selectedIndex = 0;
 
   void navigateBottomBar(int index) {

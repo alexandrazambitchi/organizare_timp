@@ -38,12 +38,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final provider = Provider.of<ActivityService>(context, listen: true);
-
-    // provider.getActivitiesFromDataBase(FirebaseAuth.instance.currentUser!.uid);
-
-    // final activities = Provider.of<ActivityProvider>(context).activities;
-    // getActivityList(activities);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -61,14 +55,11 @@ class _CalendarPageState extends State<CalendarPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, 
               children: [
-                // getDataFromDatabase(),
                 // SfCalendar(
                 //   view: CalendarView.month,
                 //   firstDayOfWeek: 1,
                 //   dataSource: ActivityDataSource(activities),
                 //   onLongPress: (details) {
-                //     provider.setDate(details.date!);
-
                 //     showModalBottomSheet(
                 //       context: context, 
                 //       builder: (context) => TasksWidget() );
