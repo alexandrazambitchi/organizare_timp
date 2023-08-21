@@ -54,4 +54,41 @@ class GroupActivityService extends ChangeNotifier {
         .doc(groupActivityId)
         .set(newActivity.toMap(), SetOptions(merge: true));
   }
+
+  Future<List<GroupActivity>> getActivitiesList(String currentGroupId) async {
+    List<GroupActivity> actList = [];
+    QuerySnapshot<Map<String, dynamic>> activities = await firestore
+        .collection('group_activity')
+        .doc(currentGroupId)
+        .collection('groupActivities')
+        .get();
+
+    for (var element in activities.docs) {
+      GroupActivity tempAct = await getActivityfromDB(currentGroupId, element.id);
+      actList.add(tempAct);
+    }
+    return actList;
+  }
+
+  Future<GroupActivity> getActivityfromDB(
+      String groupId, String activityId) async {
+    DocumentSnapshot<Map<String, dynamic>> activityDb = await firestore
+        .collection('user_activity')
+        .doc(groupId)
+        .collection('activities')
+        .doc(activityId)
+        .get();
+
+    GroupActivity act = GroupActivity(
+        groupId: groupId,
+        subject: activityDb['activity_title'],
+        notes: activityDb['description'],
+        startTime: activityDb['startTime'].toDate(),
+        endTime: activityDb['endTime'].toDate(),
+        priority: activityDb['priority'],
+        location: activityDb['location'],
+        recurrenceRule: activityDb['recurency'],
+        isAllDay: activityDb['isAllDay']);
+    return act;
+  }
 }

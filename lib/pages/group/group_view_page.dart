@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/components/button.dart';
 import 'package:organizare_timp/pages/group/group_list_page.dart';
+import 'package:organizare_timp/pages/group_activity/group_activities_calendar_view_page.dart';
 import 'package:organizare_timp/pages/group_activity/group_activities_day_view_page.dart';
 import 'package:organizare_timp/pages/group_activity/group_activity_edit_page.dart';
 import 'package:organizare_timp/services/group_service.dart';
@@ -60,6 +61,12 @@ class _GroupViewingPageState extends State<GroupViewingPage> {
                         builder: (context) =>
                             GroupActivityDayViewPage(groupId: widget.objId))),
                 text: "Vezi activitatile de azi"),
+            Button(
+                onTap: () => Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            GroupActivityCalendarPage(groupId: widget.objId))),
+                text: "Vezi activitatile in calendar"),
             adminControls(),
             Button(onTap: leaveGroup, text: "Iesi din grup")
           ],

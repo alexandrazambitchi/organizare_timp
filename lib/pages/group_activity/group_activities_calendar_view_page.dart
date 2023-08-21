@@ -1,91 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:organizare_timp/services/activity_service.dart';
+import 'package:organizare_timp/model/group_activity.dart';
+import 'package:organizare_timp/services/group_activity_service.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import '../../model/activity.dart';
 import '../../model/activity_datasource.dart';
 import '../activity/activity_edit_page.dart';
 
-class CalendarPage extends StatefulWidget {
-  const CalendarPage({super.key});
+class GroupActivityCalendarPage extends StatefulWidget {
+  final String groupId;
+  const GroupActivityCalendarPage({
+    Key? key,
+    required this.groupId,
+  }) : super(key: key);
 
   @override
-  State<CalendarPage> createState() => _CalendarPageState();
+  State<GroupActivityCalendarPage> createState() =>
+      _GroupActivityCalendarPageState();
 }
 
-class _CalendarPageState extends State<CalendarPage> {
+class _GroupActivityCalendarPageState extends State<GroupActivityCalendarPage> {
   @override
   void initState() {
-    super.initState();
     getAct();
+    super.initState();
   }
 
-  Color setActivityColor(String? category, String? priority) {
+  Color setActivityColor(String? priority) {
     Color activityColor = Colors.blue;
-    switch (category) {
-      case 'Serviciu':
-        switch (priority) {
-          case 'Important':
-            activityColor = Colors.amber.shade600;
-            break;
-          case 'Mediu':
-            activityColor = Colors.amber.shade300;
-            break;
-          case 'Scazut':
-            activityColor = Colors.amber.shade100;
-            break;
-        }
+    switch (priority) {
+      case 'Important':
+        activityColor = Colors.purple.shade600;
         break;
-      case 'Casa':
-        switch (priority) {
-          case 'Important':
-            activityColor = Colors.teal.shade600;
-            break;
-          case 'Mediu':
-            activityColor = Colors.teal.shade300;
-            break;
-          case 'Scazut':
-            activityColor = Colors.teal.shade100;
-            break;
-        }
+      case 'Mediu':
+        activityColor = Colors.purple.shade300;
         break;
-      case 'Personal':
-        switch (priority) {
-          case 'Important':
-            activityColor = Colors.indigo.shade500;
-            break;
-          case 'Mediu':
-            activityColor = Colors.indigo.shade300;
-            break;
-          case 'Scazut':
-            activityColor = Colors.indigo.shade100;
-            break;
-        }
-        break;
-      case 'Timp liber':
-        switch (priority) {
-          case 'Important':
-            activityColor = Colors.purple.shade600;
-            break;
-          case 'Mediu':
-            activityColor = Colors.purple.shade300;
-            break;
-          case 'Scazut':
-            activityColor = Colors.purple.shade100;
-            break;
-        }
+      case 'Scazut':
+        activityColor = Colors.purple.shade100;
         break;
     }
 
     return activityColor;
   }
 
-  List<Activity> activities = [];
+  List<GroupActivity> activities = [];
 
-  ActivityService activityService = ActivityService();
+  GroupActivityService activityService = GroupActivityService();
 
   void getAct() async {
-    activities = await activityService.getActivitiesList();
+    activities = await activityService.getActivitiesList(widget.groupId);
   }
 
   List<Appointment> getAppointments() {
@@ -96,8 +58,8 @@ class _CalendarPageState extends State<CalendarPage> {
       meetings.add(Appointment(
         startTime: element.startTime,
         endTime: element.endTime,
-        subject: element.title,
-        color: setActivityColor(element.category, element.priority),
+        subject: element.subject,
+        color: setActivityColor(element.priority),
       ));
     }
 
@@ -106,8 +68,8 @@ class _CalendarPageState extends State<CalendarPage> {
 
   final CalendarController _controller = CalendarController();
 
-  final Color _viewHeaderColor = const Color(0xff03aa4f6);
-  final Color _calendarColor = const Color(0xff0bae5ff);
+  final Color _viewHeaderColor = const Color(0xFF03aa4f6);
+  final Color _calendarColor = const Color(0xFF0bae5ff);
 
   @override
   Widget build(BuildContext context) {
@@ -179,10 +141,3 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 }
-
-
-// class MeetingDataSource extends CalendarDataSource {
-//   MeetingDataSource(List<Appointment> source) {
-//     appointments = source;
-//   }
-// }

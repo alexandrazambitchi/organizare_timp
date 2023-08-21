@@ -10,11 +10,8 @@ class ActivityEditPage extends StatefulWidget {
   final Activity? activity;
   final String? objId;
 
-  const ActivityEditPage({
-    Key? key,
-    this.activity,
-    this.objId
-  }) : super(key: key);
+  const ActivityEditPage({Key? key, this.activity, this.objId})
+      : super(key: key);
 
   @override
   State<ActivityEditPage> createState() => _ActivityEditPageState();
@@ -42,7 +39,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   String selectCategory = "";
   String selectPriority = "";
   String selectRecurrence = "";
-  
+
   String? get objId => null;
 
   @override
@@ -61,7 +58,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
       categoryController.text = activity.category!;
       priorityController.text = activity.priority!;
       detailsController.text = activity.description!;
-      isChecked = activity.isAllDay!;
+      isChecked = activity.isAllDay;
     }
   }
 
@@ -141,7 +138,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   void saveNewActivity() async {
     final isValid = formKey.currentState!.validate();
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    
+
     if (isValid) {
       final activity = Activity(
           user: firebaseAuth.currentUser!.uid,
@@ -161,7 +158,6 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
       final isEditing = widget.activity != null;
 
       final ActivityService activityService = ActivityService();
-      
 
       if (isEditing) {
         final objId = widget.objId!;

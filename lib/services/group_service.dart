@@ -45,8 +45,6 @@ class GroupService extends ChangeNotifier {
   }
 
   Future<void> deleteGroup(String groupId) async {
-    final String currentUserId = auth.currentUser!.uid;
-
     Group getGroup = await findGroup(groupId);
 
     await firestore.collection('groups').doc(groupId).delete();
@@ -69,7 +67,6 @@ class GroupService extends ChangeNotifier {
     await firestore
         .collection('groups')
         .doc(groupId)
-        // .update(newGroup.toMap());
         .set(newGroup.toMap());
 
 
