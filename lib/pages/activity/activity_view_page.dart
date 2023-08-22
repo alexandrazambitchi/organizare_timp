@@ -23,7 +23,7 @@ class ActivityViewingPage extends StatelessWidget {
           padding: const EdgeInsets.all(32),
           children: <Widget>[
             Text(
-              activity.title,
+              activity.subject,
               style: const TextStyle(fontSize: 24),
             ),
             buildDateTime(activity),
@@ -31,7 +31,7 @@ class ActivityViewingPage extends StatelessWidget {
               height: 10,
             ),
             Text(
-              activity.description ?? 'Fara descriere',
+              activity.notes ?? 'Fara descriere',
               style: const TextStyle(fontSize: 16),
             ),
             Text(

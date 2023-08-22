@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../model/activity.dart';
 
-class ActivityService extends ChangeNotifier{
-
+class ActivityService extends ChangeNotifier {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -16,34 +15,66 @@ class ActivityService extends ChangeNotifier{
   Future<void> addActivity(Activity activity) async {
     final String currentUserId = auth.currentUser!.uid;
 
-    Activity newActivity = Activity(user: currentUserId, 
-                                    title: activity.title, 
-                                    description: activity.description, 
-                                    startTime: activity.startTime, 
-                                    endTime: activity.endTime, 
-                                    category: activity.category, 
-                                    priority: activity.priority, 
-                                    location: activity.location, 
-                                    recurency: activity.recurency,);
+    Activity newActivity = Activity(
+      user: currentUserId,
+      subject: activity.subject,
+      notes: activity.notes,
+      startTime: activity.startTime,
+      endTime: activity.endTime,
+      category: activity.category,
+      priority: activity.priority,
+      location: activity.location,
+      recurrenceRule: activity.recurrenceRule,
+      isAllDay: activity.isAllDay
+    );
 
-    await firestore.collection('user_activity').doc(currentUserId).collection('activities').add(newActivity.toMap());
+    DocumentReference docReference = await firestore
+        .collection('user_activity')
+        .doc(currentUserId)
+        .collection('activities')
+        .add(newActivity.toMap());
 
+    newActivity.id = docReference.id;
+
+    await firestore
+        .collection('user_activity')
+        .doc(currentUserId)
+        .collection('activities')
+        .doc(docReference.id)
+        .set(newActivity.toMap());
   }
 
-  Stream<QuerySnapshot> getActivities(String userId){
-    return firestore.collection('user_activity').doc(userId).collection('activities').orderBy('endTime', descending: false).snapshots();
+  Stream<QuerySnapshot> getActivities(String userId) {
+    return firestore
+        .collection('user_activity')
+        .doc(userId)
+        .collection('activities')
+        .orderBy('endTime', descending: false)
+        .snapshots();
   }
-  
+
   Future<void> deleteActivity(String activityId) async {
     final String currentUserId = auth.currentUser!.uid;
 
-    await firestore.collection('user_activity').doc(currentUserId).collection('activities').doc(activityId).delete();
+    await firestore
+        .collection('user_activity')
+        .doc(currentUserId)
+        .collection('activities')
+        .doc(activityId)
+        .delete();
   }
 
   Future<void> editActivity(String activityId, Activity newActivity) async {
     final String currentUserId = auth.currentUser!.uid;
 
-    await firestore.collection('user_activity').doc(currentUserId).collection('activities').doc(activityId).set(newActivity.toMap(), SetOptions(merge: true));
+    newActivity.id = activityId;
+
+    await firestore
+        .collection('user_activity')
+        .doc(currentUserId)
+        .collection('activities')
+        .doc(activityId)
+        .set(newActivity.toMap());
   }
 
   Future<List<Activity>> getActivitiesList() async {
@@ -72,15 +103,16 @@ class ActivityService extends ChangeNotifier{
         .get();
 
     Activity act = Activity(
+        id: activityId,
         user: currentUserId,
-        title: activityDb['activity_title'],
-        description: activityDb['description'],
+        subject: activityDb['activity_title'],
+        notes: activityDb['description'],
         startTime: activityDb['startTime'].toDate(),
         endTime: activityDb['endTime'].toDate(),
         category: activityDb['category'],
         priority: activityDb['priority'],
         location: activityDb['location'],
-        recurency: activityDb['recurency'],
+        recurrenceRule: activityDb['recurency'],
         isAllDay: activityDb['isAllDay']);
     return act;
   }

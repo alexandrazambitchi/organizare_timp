@@ -211,7 +211,7 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
                     ),
                     TextFormField(
                       style: const TextStyle(fontSize: 16),
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: UnderlineInputBorder(),
                         hintText: 'Frecventa recurentei'
                       ),

@@ -91,7 +91,7 @@ class _TasksWidgetState extends State<TasksWidget> {
       meetings.add(Appointment(
         startTime: element.startTime,
         endTime: element.endTime,
-        subject: element.title,
+        subject: element.subject,
         color: setActivityColor(element.category, element.priority),
       ));
     }

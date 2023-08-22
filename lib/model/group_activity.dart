@@ -5,6 +5,7 @@ class GroupActivity extends Appointment{
   String? priority;
 
   GroupActivity({
+    id,
     subject, 
     startTime,
     endTime,
@@ -15,6 +16,7 @@ class GroupActivity extends Appointment{
     this.groupId,
     this.priority,
   }) : super(
+    id: id,
     subject: subject,
     startTime: startTime,
     endTime: endTime,
@@ -26,6 +28,7 @@ class GroupActivity extends Appointment{
 
   Map<String, dynamic> toMap(){
     return {
+      'id': id,
       'groupId': groupId,
       'activity_title': subject,
       'description': notes,

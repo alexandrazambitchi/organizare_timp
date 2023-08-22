@@ -20,11 +20,20 @@ class GroupActivityService extends ChangeNotifier {
         isAllDay: groupActivity.isAllDay,
         priority: groupActivity.priority);
 
-    await firestore
+    DocumentReference docReference = await firestore
         .collection('group_activity')
         .doc(groupId)
         .collection('groupActivities')
         .add(newActivity.toMap());
+
+    newActivity.id = docReference.id;
+
+    await firestore
+        .collection('group_activity')
+        .doc(groupId)
+        .collection('groupActivities')
+        .doc(docReference.id)
+        .set(newActivity.toMap());
   }
 
   Stream<QuerySnapshot> getActivities(String groupId) {
@@ -47,12 +56,15 @@ class GroupActivityService extends ChangeNotifier {
 
   Future<void> editActivity(
       String groupId, String groupActivityId, GroupActivity newActivity) async {
+    
+    newActivity.id = groupActivityId;
+
     await firestore
         .collection('group_activity')
         .doc(groupId)
         .collection('groupActivities')
         .doc(groupActivityId)
-        .set(newActivity.toMap(), SetOptions(merge: true));
+        .set(newActivity.toMap());
   }
 
   Future<List<GroupActivity>> getActivitiesList(String currentGroupId) async {
@@ -64,7 +76,8 @@ class GroupActivityService extends ChangeNotifier {
         .get();
 
     for (var element in activities.docs) {
-      GroupActivity tempAct = await getActivityfromDB(currentGroupId, element.id);
+      GroupActivity tempAct =
+          await getActivityfromDB(currentGroupId, element.id);
       actList.add(tempAct);
     }
     return actList;
@@ -73,13 +86,14 @@ class GroupActivityService extends ChangeNotifier {
   Future<GroupActivity> getActivityfromDB(
       String groupId, String activityId) async {
     DocumentSnapshot<Map<String, dynamic>> activityDb = await firestore
-        .collection('user_activity')
+        .collection('group_activity')
         .doc(groupId)
-        .collection('activities')
+        .collection('groupActivities')
         .doc(activityId)
         .get();
 
     GroupActivity act = GroupActivity(
+        id: activityId,
         groupId: groupId,
         subject: activityDb['activity_title'],
         notes: activityDb['description'],

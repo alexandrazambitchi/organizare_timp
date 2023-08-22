@@ -52,12 +52,14 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
     } else {
       final activity = widget.activity!;
 
-      titleController.text = activity.title;
+      titleController.text = activity.subject;
       startDate = activity.startTime;
       endDate = activity.endTime;
       categoryController.text = activity.category!;
       priorityController.text = activity.priority!;
-      detailsController.text = activity.description!;
+      locationController.text = activity.location!;
+      recurrencyController.text = activity.recurrenceRule!;
+      detailsController.text = activity.notes!;
       isChecked = activity.isAllDay;
     }
   }
@@ -142,16 +144,15 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
     if (isValid) {
       final activity = Activity(
           user: firebaseAuth.currentUser!.uid,
-          title: titleController.text,
-          description: detailsController.text,
+          subject: titleController.text,
+          notes: detailsController.text,
           startTime: startDate,
           endTime: endDate,
           category: selectCategory,
           priority: selectPriority,
-          recurency: "daily",
+          recurrenceRule:
+              setRecurrency(selectRecurrence, recurrencyFreqController.text),
           location: locationController.text,
-          // recurrenceRule: 'FREQ=DAILY;INTERVAL=1;COUNT=10',
-          // setRecurrency(selectRecurrence, recurrencyFreqController.text),
           activityColor: setActivityColor(selectCategory, selectPriority),
           isAllDay: false);
 
@@ -257,25 +258,24 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                 // setRecurency(),
                 // Row(
                 //   children: [
-                //     DropDownField(
-                //       controller: recurrencyController,
-                //       hintText: "Recurenta",
-                //       enabled: true,
-                //       items: recurrencyOptions,
-                //       onValueChanged: (value) {
-                //         setState(() {
-                //           selectRecurrence = value;
-                //         });
-                //       },
-                //     ),
-                //     // TextFormField(
-                //     //   style: TextStyle(fontSize: 16),
-                //     //   decoration: InputDecoration(
-                //     //     border: UnderlineInputBorder(),
-                //     //     hintText: 'Frecventa recurentei'
-                //     //   ),
-                //     //   controller: recurrencyFreqController,
-                //     // )
+                DropDownField(
+                  controller: recurrencyController,
+                  hintText: "Recurenta",
+                  enabled: true,
+                  items: recurrencyOptions,
+                  onValueChanged: (value) {
+                    setState(() {
+                      selectRecurrence = value;
+                    });
+                  },
+                ),
+                TextFormField(
+                  style: const TextStyle(fontSize: 16),
+                  decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      hintText: 'Frecventa recurentei'),
+                  controller: recurrencyFreqController,
+                )
                 //   ],
                 // ),
               ],

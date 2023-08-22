@@ -23,14 +23,14 @@ class _UserHomePageState extends State<UserHomePage> {
   Activity getActivityItem(Map<String, dynamic> activities) {
     return Activity(
         user: activities["user"],
-        title: activities["activity_title"],
-        description: activities["description"],
+        subject: activities["activity_title"],
+        notes: activities["description"],
         startTime: activities["startTime"].toDate(),
         endTime: activities["endTime"].toDate(),
         category: activities["category"],
         priority: activities["priority"],
         location: activities["location"],
-        recurency: activities["recurency"],
+        recurrenceRule: activities["recurency"],
         isAllDay: activities["isAllDay"]);
   }
 

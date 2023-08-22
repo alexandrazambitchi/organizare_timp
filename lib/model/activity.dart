@@ -1,43 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class Activity{
+class Activity extends Appointment{
   String user;
-  String title;
-  String? description;
-  DateTime startTime;
-  DateTime endTime;
   String? category;
   String? priority;
-  String? location;
-  String? recurency;
   Color activityColor;
-  bool isAllDay;
 
   Activity({
+    id,
+    subject, 
+    startTime,
+    endTime,
+    notes,
+    location, 
+    recurrenceRule,
+    isAllDay,
     required this.user,
-    required this.title,
-    required this.description,
-    required this.startTime,
-    required this.endTime,
-    required this.category,
-    required this.priority,
-    required this.location,
-    required this.recurency,
+    this.category,
+    this.priority,
     this.activityColor = Colors.blue,
-    this.isAllDay = false
-  });
+  }) : super(
+    id: id,
+    subject: subject,
+    startTime: startTime,
+    endTime: endTime,
+    notes: notes,
+    location: location,
+    recurrenceRule: recurrenceRule,
+    isAllDay: isAllDay,
+  );
 
   Map<String, dynamic> toMap(){
     return {
+      'id': id,
       'user': user,
-      'activity_title': title,
-      'description': description,
+      'activity_title': subject,
+      'description': notes,
       'startTime': startTime,
       'endTime': endTime,
       'category': category,
       'priority': priority,
       'location': location,
-      'recurency': recurency,
+      'recurency': recurrenceRule,
       'isAllDay': isAllDay, 
     };
   }
