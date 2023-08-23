@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:organizare_timp/pages/activity/activity_view_notif_page.dart';
 import 'package:organizare_timp/pages/group/group_page.dart';
 import 'package:organizare_timp/pages/settings_page.dart';
 import 'package:organizare_timp/pages/user_home_page.dart';
 import 'package:flutter/material.dart';
+import '../services/notification_service.dart';
 import 'calendar/calendar_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +16,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    NotificationService().initNotification();
+    listenNotifications();
+  }
+
+  void listenNotifications() =>
+      NotificationService().onNotification.stream.listen(onClickedNotification);
+
+  void onClickedNotification(String? payload) =>
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => ActivityViewNotifPage(
+                payload: payload,
+              )));
+
   FirebaseAuth auth = FirebaseAuth.instance;
   int selectedIndex = 0;
 

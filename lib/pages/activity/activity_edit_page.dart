@@ -5,6 +5,7 @@ import 'package:organizare_timp/components/utils.dart';
 import 'package:organizare_timp/model/activity.dart';
 
 import '../../services/activity_service.dart';
+import '../../services/notification_service.dart';
 
 class ActivityEditPage extends StatefulWidget {
   final Activity? activity;
@@ -24,6 +25,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
   final bool allDay = false;
   late bool isChecked = false;
+  late bool isRecurrent = false;
 
   final titleController = TextEditingController();
   final locationController = TextEditingController();
@@ -167,6 +169,18 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
         activityService.addActivity(activity);
       }
 
+       NotificationService().scheduleNotification(
+                    title: titleController.text,
+                    body: '$startDate',
+                    scheduleNotificationDateTime: startDate,
+                    payload: activity.id.toString()
+                  );
+      debugPrint('Notification Scheduled for $startDate');
+      debugPrint('payload ${activity.id}');
+      final snackBar = SnackBar(content: Text('Notificare activata la $startDate', style: TextStyle(fontSize: 24),),);
+
+      ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(snackBar);
+      
       Navigator.of(context).pop();
     }
   }
@@ -219,6 +233,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
                 //category
                 DropDownField(
+                  itemsVisibleInDropdown: categories.length,
                   controller: categoryController,
                   hintText: "Categorie",
                   enabled: true,
@@ -234,6 +249,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                 ),
                 // setPriority(),
                 DropDownField(
+                  itemsVisibleInDropdown: priorities.length,
                   controller: priorityController,
                   hintText: "Prioritate",
                   enabled: true,
@@ -247,7 +263,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                 const SizedBox(
                   height: 25,
                 ),
-                const Text('Reminders setting'),
+                // const Text('Reminders setting'),
                 const SizedBox(
                   height: 25,
                 ),
@@ -255,27 +271,19 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                 const SizedBox(
                   height: 25,
                 ),
-                // setRecurency(),
-                // Row(
-                //   children: [
-                DropDownField(
-                  controller: recurrencyController,
-                  hintText: "Recurenta",
-                  enabled: true,
-                  items: recurrencyOptions,
-                  onValueChanged: (value) {
-                    setState(() {
-                      selectRecurrence = value;
-                    });
-                  },
+                CheckboxListTile(
+                    title: const Text("Activitate recurenta"),
+                    controlAffinity: ListTileControlAffinity.platform,
+                    value: isRecurrent,
+                    onChanged: (value) {
+                      setState(() {
+                        isRecurrent = value!;
+                      });
+                    }),
+                const SizedBox(
+                  height: 25,
                 ),
-                TextFormField(
-                  style: const TextStyle(fontSize: 16),
-                  decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      hintText: 'Frecventa recurentei'),
-                  controller: recurrencyFreqController,
-                )
+                setRecurrenceRule(),
                 //   ],
                 // ),
               ],
@@ -444,4 +452,34 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
             border: UnderlineInputBorder(), hintText: 'Descriere'),
         controller: detailsController,
       );
+  
+  Widget setRecurrenceRule(){
+    if(isRecurrent){
+      return Column(children: [
+        DropDownField(
+          itemsVisibleInDropdown: recurrencyOptions.length,
+                  controller: recurrencyController,
+                  hintText: "Recurenta",
+                  enabled: true,
+                  items: recurrencyOptions,
+                  onValueChanged: (value) {
+                    setState(() {
+                      selectRecurrence = value;
+                    });
+                  },
+                ),
+                TextFormField(
+                  style: const TextStyle(fontSize: 16),
+                  decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      hintText: 'Frecventa recurentei'),
+                  controller: recurrencyFreqController,
+                   validator: (number) => number != null && number.isEmpty
+            ? 'Frecventa trebuie sa fie minim 1'
+            : null,
+                )
+      ],);
+    }
+    return Container();
+  }
 }

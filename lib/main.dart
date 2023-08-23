@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:organizare_timp/pages/root_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:organizare_timp/services/auth_service.dart';
+import 'package:organizare_timp/services/notification_service.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  NotificationService().initNotification();
+  tz.initializeTimeZones();
 
   runApp(const MyApp());
 }
