@@ -5,9 +5,11 @@ import 'package:organizare_timp/pages/group/group_list_page.dart';
 import 'package:organizare_timp/pages/group_activity/group_activities_calendar_view_page.dart';
 import 'package:organizare_timp/pages/group_activity/group_activities_day_view_page.dart';
 import 'package:organizare_timp/pages/group_activity/group_activity_edit_page.dart';
+import 'package:organizare_timp/services/auth_service.dart';
 import 'package:organizare_timp/services/group_service.dart';
 
 import '../../model/group.dart';
+import '../../model/user_model.dart';
 import 'group_edit_page.dart';
 
 class GroupViewingPage extends StatefulWidget {
@@ -24,6 +26,10 @@ class GroupViewingPage extends StatefulWidget {
 
 class _GroupViewingPageState extends State<GroupViewingPage> {
   FirebaseAuth auth = FirebaseAuth.instance;
+  AuthService authService = AuthService();
+
+  List<UserModel> usersData = [];
+  List<UserModel> groupMembers = [];
 
   void leaveGroup() async {
     final GroupService groupService = GroupService();
@@ -55,6 +61,7 @@ class _GroupViewingPageState extends State<GroupViewingPage> {
               widget.group.leader,
               style: const TextStyle(fontSize: 16),
             ),
+            showMembers(),
             Button(
                 onTap: () => Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
@@ -110,5 +117,28 @@ class _GroupViewingPageState extends State<GroupViewingPage> {
     } else {
       return Container();
     }
+  }
+
+  void getAllUsersData() async {
+    usersData = await authService.getUserList();
+  }
+
+  Widget showMembers() {
+    List<UserModel> usersData = [];
+    getAllUsersData();
+    List<String> tempMembersList = widget.group.members;
+    
+    for(var member in usersData){
+      if(tempMembersList.contains(member.uid)){
+        groupMembers.add(member);
+      }
+    }
+  
+    if (groupMembers.isEmpty) {
+      return const Text("Nu exista niciun membru");
+    }
+    return Wrap(
+      children: groupMembers.map((e) => Chip(label: Text(e.name))).toList(),
+    );
   }
 }

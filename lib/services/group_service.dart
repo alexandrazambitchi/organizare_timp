@@ -15,7 +15,7 @@ class GroupService extends ChangeNotifier {
       name: group.name,
       leader: group.leader,
       description: group.description,
-      members: [currentUserId],
+      members: List<String>.from(group.members),
     );
 
     DocumentReference docReference =
@@ -34,6 +34,17 @@ class GroupService extends ChangeNotifier {
         .collection('groups')
         .doc(docReference.id)
         .set(newGroup.toMap(), SetOptions(merge: true));
+
+    if (newGroup.members.length > 1) {
+      for (var member in newGroup.members) {
+        await firestore
+            .collection('user_group')
+            .doc(member)
+            .collection('groups')
+            .doc(docReference.id)
+            .set(newGroup.toMap());
+      }
+    }
   }
 
   Stream<QuerySnapshot> getGroups(String userId) {
@@ -49,33 +60,30 @@ class GroupService extends ChangeNotifier {
 
     await firestore.collection('groups').doc(groupId).delete();
 
-    if(getGroup.members.isNotEmpty){
-      for (var member in getGroup.members){
+    if (getGroup.members.isNotEmpty) {
+      for (var member in getGroup.members) {
         await firestore
-        .collection('user_group')
-        .doc(member)
-        .collection('groups')
-        .doc(groupId).delete();
-
-    }
+            .collection('user_group')
+            .doc(member)
+            .collection('groups')
+            .doc(groupId)
+            .delete();
+      }
     }
   }
 
   Future<void> editGroup(String groupId, Group newGroup) async {
     newGroup.id = groupId;
 
-    await firestore
-        .collection('groups')
-        .doc(groupId)
-        .set(newGroup.toMap());
+    await firestore.collection('groups').doc(groupId).set(newGroup.toMap());
 
-
-    for (var member in newGroup.members){
-        await firestore
-        .collection('user_group')
-        .doc(member)
-        .collection('groups')
-        .doc(groupId).set(newGroup.toMap());
+    for (var member in newGroup.members) {
+      await firestore
+          .collection('user_group')
+          .doc(member)
+          .collection('groups')
+          .doc(groupId)
+          .set(newGroup.toMap());
     }
   }
 
@@ -94,24 +102,22 @@ class GroupService extends ChangeNotifier {
 
     getGroup.members.add(currentUserId);
 
-    await firestore
-        .collection('groups')
-        .doc(groupId)
-        .set(getGroup.toMap());
+    await firestore.collection('groups').doc(groupId).set(getGroup.toMap());
 
-    for (var member in getGroup.members){
-        await firestore
-        .collection('user_group')
-        .doc(member)
-        .collection('groups')
-        .doc(groupId).set(getGroup.toMap());
+    for (var member in getGroup.members) {
+      await firestore
+          .collection('user_group')
+          .doc(member)
+          .collection('groups')
+          .doc(groupId)
+          .set(getGroup.toMap());
     }
   }
 
   Future<Group> findGroup(String groupId) async {
     DocumentSnapshot<Map<String, dynamic>> localGroup =
         await firestore.collection('groups').doc(groupId).get();
-  
+
     return Group(
         id: localGroup["id"],
         name: localGroup["name"],
@@ -135,22 +141,22 @@ class GroupService extends ChangeNotifier {
 
     getGroup.members.remove(currentUserId);
 
-    await firestore
-        .collection('groups')
-        .doc(groupId)
-        .set(getGroup.toMap());
+    await firestore.collection('groups').doc(groupId).set(getGroup.toMap());
 
     await firestore
         .collection('user_group')
         .doc(currentUserId)
-        .collection('groups').doc(groupId).delete();
-
-    for (var member in getGroup.members){
-        await firestore
-        .collection('user_group')
-        .doc(member)
         .collection('groups')
-        .doc(groupId).set(getGroup.toMap());
+        .doc(groupId)
+        .delete();
+
+    for (var member in getGroup.members) {
+      await firestore
+          .collection('user_group')
+          .doc(member)
+          .collection('groups')
+          .doc(groupId)
+          .set(getGroup.toMap());
     }
   }
 }

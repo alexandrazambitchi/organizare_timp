@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:organizare_timp/model/user_model.dart';
 
 class AuthService extends ChangeNotifier {
 
@@ -72,6 +73,48 @@ class AuthService extends ChangeNotifier {
               'name': googleUser.displayName},
             SetOptions(merge: true));
     return userCredential;
+  }
+
+  Future<List<UserModel>> getUserList() async {
+    List<UserModel> users = [];
+    QuerySnapshot<Map<String, dynamic>> usersCollection = await firestore
+        .collection('users')
+        .get();
+
+    for (var element in usersCollection.docs) {
+      UserModel tempUser = await getUserfromDB(element.id);
+      users.add(tempUser);
+    }
+    return users;
+  }
+
+  Future<UserModel> getUserfromDB(String userId) async {
+    DocumentSnapshot<Map<String, dynamic>> userDb = await firestore
+        .collection('users')
+        .doc(userId)
+        .get();
+
+    return UserModel (
+      uid: userId,
+      email: userDb['email'],
+      name: userDb['name'],
+    );
+  }
+
+  Future<List<UserModel>> getOtherUserList() async {
+    String currentUserId = firebaseAuth.currentUser!.uid;
+    List<UserModel> users = [];
+    QuerySnapshot<Map<String, dynamic>> usersCollection = await firestore
+        .collection('users')
+        .get();
+
+    for (var element in usersCollection.docs) {
+      if(element.id != currentUserId){
+        UserModel tempUser = await getUserfromDB(element.id);
+        users.add(tempUser);
+      }
+    }
+    return users;
   }
 
   

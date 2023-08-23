@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:organizare_timp/model/user_model.dart';
 import 'package:organizare_timp/pages/group/group_list_page.dart';
 import 'package:organizare_timp/pages/group/group_page.dart';
+import 'package:organizare_timp/services/auth_service.dart';
 import 'package:organizare_timp/services/group_service.dart';
 
 import '../../components/button.dart';
+import '../../components/multiselect.dart';
 import '../../model/group.dart';
 
 class GroupEditPage extends StatefulWidget {
@@ -19,8 +22,42 @@ class GroupEditPage extends StatefulWidget {
 }
 
 class _GroupEditPageState extends State<GroupEditPage> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   final groupNameController = TextEditingController();
   final descriptionController = TextEditingController();
+  List<UserModel> selectedUsers = [];
+
+  AuthService authService = AuthService();
+
+  void showMultiSelect() async {
+    final List<UserModel> possibleUsers = await authService.getOtherUserList();
+
+    // ignore: use_build_context_synchronously
+    final List<UserModel>? results = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return MultiSelect(
+            users: possibleUsers,
+            alreadySelected: selectedUsers,
+          );
+        });
+
+    if (results != null) {
+      setState(() {
+        selectedUsers = results;
+      });
+    }
+  }
+
+  void getCurrentMembers() async {
+    List<UserModel> otherUsers = await authService.getOtherUserList();
+    List<String> tempMembersList = widget.group!.members;
+    for (var user in otherUsers) {
+      if (tempMembersList.contains(user.uid)) {
+        selectedUsers.add(user);
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -31,6 +68,8 @@ class _GroupEditPageState extends State<GroupEditPage> {
 
       groupNameController.text = group.name;
       descriptionController.text = group.description!;
+      getCurrentMembers();
+      debugPrint(selectedUsers.length.toString());
     }
   }
 
@@ -48,10 +87,16 @@ class _GroupEditPageState extends State<GroupEditPage> {
 
     final GroupService groupService = GroupService();
 
+    if (selectedUsers.isNotEmpty) {
+      newGroup.members.addAll(selectedUsers.map((e) => e.uid).toList());
+    }
+
     if (isEditing) {
       final objId = widget.objId!;
-      List<String>? oldMembers = widget.group?.members;
-      newGroup.members = oldMembers!;
+      if (selectedUsers.isEmpty) {
+        List<String>? oldMembers = widget.group?.members;
+        newGroup.members = oldMembers!;
+      }
       groupService.editGroup(objId, newGroup);
     } else {
       groupService.addGroup(newGroup);
@@ -93,12 +138,14 @@ class _GroupEditPageState extends State<GroupEditPage> {
                   const SizedBox(
                     height: 25,
                   ),
-                  TextFormField(
-                    controller: descriptionController,
-                    decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.group),
-                        hintText: "Descrierea grupului"),
+                  ElevatedButton(
+                      onPressed: showMultiSelect,
+                      child: const Text('Adauga utilizatori')),
+                  const SizedBox(
+                    height: 25,
                   ),
+                  const Text('Utilizatori selectati: '),
+                  showAddedUsers(),
                   Button(
                     text: "Salveaza grup",
                     onTap: saveGroup,
@@ -106,5 +153,17 @@ class _GroupEditPageState extends State<GroupEditPage> {
                 ]))
           ],
         ));
+  }
+
+  Widget showAddedUsers() {
+    // getCurrentMembers();
+
+    if (selectedUsers.isEmpty) {
+      return const Text("Nu a fost selectat niciun utilizator");
+    }
+    getCurrentMembers();
+    return Wrap(
+      children: selectedUsers.map((e) => Chip(label: Text(e.name))).toList(),
+    );
   }
 }
