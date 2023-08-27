@@ -69,20 +69,20 @@ class _RegisterPageState extends State<RegisterPage> {
             //logo
             const Icon(
               Icons.calendar_month,
-              size: 100,
+              size: 75,
             ),
 
             const SizedBox(
-              height: 25,
+              height: 20,
             ),
             Text(
               'Bine ati venit!',
               style: TextStyle(
                 color: Colors.grey[700],
-                fontSize: 16,
+                fontSize: 20,
               ),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 20),
 
             // name textfield
             Textfields(
@@ -116,17 +116,17 @@ class _RegisterPageState extends State<RegisterPage> {
               obscureText: true,
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 15),
 
             Button(
               text: "Sign up",
               onTap: signUserUp,
             ),
 
-            const SizedBox(height: 50),
+            const SizedBox(height: 15),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Row(
                 children: [
                   Expanded(
@@ -136,7 +136,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       'Or continue with',
                       style: TextStyle(color: Colors.grey[700]),
@@ -152,15 +152,15 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
 
-            const SizedBox(height: 50),
+            const SizedBox(height: 20),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // SquareTile(onTap: () {}, imagePath: 'lib/images/apple.png'),
-                const SizedBox(
-                  width: 25,
-                ),
+                // // SquareTile(onTap: () {}, imagePath: 'lib/images/apple.png'),
+                // const SizedBox(
+                //   width: 25,
+                // ),
                 SquareTile(
                   imagePath: 'lib/images/google.png',
                   onTap: signInGoogle,
@@ -168,7 +168,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ],
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 20),
 
             Button(
               onTap: () {

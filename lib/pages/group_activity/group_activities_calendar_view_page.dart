@@ -37,13 +37,13 @@ class _GroupActivityCalendarPageState extends State<GroupActivityCalendarPage> {
   Color setActivityColor(String? priority) {
     Color activityColor = Colors.blue;
     switch (priority) {
-      case 'Important':
+      case 'Mare':
         activityColor = Colors.purple.shade600;
         break;
       case 'Mediu':
         activityColor = Colors.purple.shade300;
         break;
-      case 'Scazut':
+      case 'Mica':
         activityColor = Colors.purple.shade100;
         break;
     }
@@ -60,6 +60,7 @@ class _GroupActivityCalendarPageState extends State<GroupActivityCalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: CloseButton(),
         actions: [
           IconButton(
               icon: const Icon(Icons.note_add_rounded),
@@ -70,14 +71,7 @@ class _GroupActivityCalendarPageState extends State<GroupActivityCalendarPage> {
                   )))
         ],
       ),
-      body: SafeArea(
-          child: Center(
-              child: SingleChildScrollView(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-            groupActCalendar(),
-          ])))),
+      body: groupActCalendar(),
     );
   }
 

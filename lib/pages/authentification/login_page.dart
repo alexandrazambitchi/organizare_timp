@@ -67,15 +67,15 @@ class _LoginPageState extends State<LoginPage> {
               height: 50,
             ),
 
-            Text(
+            const Text(
               'Bine ati revenit!',
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 16,
+                fontSize: 20,
               ),
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 15),
 
             // username textfield
             Textfields(
@@ -93,14 +93,14 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: true,
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 15),
 
             Button(
               text: "Autentificare",
               onTap: signUserIn,
             ),
 
-            const SizedBox(height: 50),
+            const SizedBox(height: 25),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -129,15 +129,15 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
 
-            const SizedBox(height: 50),
+            const SizedBox(height: 25),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // SquareTile(onTap: () {}, imagePath: 'lib/images/apple.png'),
-                const SizedBox(
-                  width: 25,
-                ),
+                // const SizedBox(
+                //   width: 25,
+                // ),
                 SquareTile(
                   imagePath: 'lib/images/google.png',
                   onTap: signInGoogle,

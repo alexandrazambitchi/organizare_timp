@@ -34,52 +34,52 @@ class _CalendarPageState extends State<CalendarPage> {
     switch (category) {
       case 'Serviciu':
         switch (priority) {
-          case 'Important':
+          case 'Mare':
             activityColor = Colors.amber.shade600;
             break;
           case 'Mediu':
             activityColor = Colors.amber.shade300;
             break;
-          case 'Scazut':
+          case 'Mica':
             activityColor = Colors.amber.shade100;
             break;
         }
         break;
       case 'Casa':
         switch (priority) {
-          case 'Important':
+          case 'Mare':
             activityColor = Colors.teal.shade600;
             break;
           case 'Mediu':
             activityColor = Colors.teal.shade300;
             break;
-          case 'Scazut':
+          case 'Mica':
             activityColor = Colors.teal.shade100;
             break;
         }
         break;
       case 'Personal':
         switch (priority) {
-          case 'Important':
+          case 'Mare':
             activityColor = Colors.indigo.shade500;
             break;
           case 'Mediu':
             activityColor = Colors.indigo.shade300;
             break;
-          case 'Scazut':
+          case 'Mica':
             activityColor = Colors.indigo.shade100;
             break;
         }
         break;
       case 'Timp liber':
         switch (priority) {
-          case 'Important':
+          case 'Mare':
             activityColor = Colors.purple.shade600;
             break;
           case 'Mediu':
             activityColor = Colors.purple.shade300;
             break;
-          case 'Scazut':
+          case 'Mica':
             activityColor = Colors.purple.shade100;
             break;
         }
@@ -107,14 +107,6 @@ class _CalendarPageState extends State<CalendarPage> {
         ],
       ),
       body: userActList(),
-      // SafeArea(
-      // child: Center(
-      //     child: SingleChildScrollView(
-      //         child: Column(
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             children: [
-
-      // ])))
     );
   }
 

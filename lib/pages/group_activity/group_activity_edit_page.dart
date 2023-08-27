@@ -24,6 +24,7 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
 
   final bool allDay = false;
   late bool isChecked = false;
+  late bool isRecurrent = false;
 
   final titleController = TextEditingController();
   final locationController = TextEditingController();
@@ -32,7 +33,7 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
   final recurrencyFreqController = TextEditingController();
   final detailsController = TextEditingController();
 
-  List<String> priorities = ["Important", "Mediu", "Scazut"];
+  List<String> priorities = ["Mare", "Mediu", "Mica"];
   List<String> recurrencyOptions = ["Zilnic", "Saptamanal", "Lunar"];
   String selectPriority = "";
   String selectRecurrence = "";
@@ -55,8 +56,27 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
       locationController.text = activity.location!;
       recurrencyController.text = activity.recurrenceRule!;
       priorityController.text = activity.priority!;
+      selectPriority = activity.priority!;
       detailsController.text = activity.notes!;
       isChecked = activity.isAllDay;
+      isRecurrent = activity.recurrenceRule != null;
+      List<String> recurencySplit = activity.recurrenceRule!.split("=");
+      recurrencyFreqController.text = recurencySplit.last;
+      switch (recurencySplit[1].split(';')[0]) {
+        case 'DAILY':
+          selectRecurrence = 'Zilnic';
+          break;
+        case 'WEEKLY':
+          selectRecurrence = 'Saptamanal';
+          break;
+        case 'MONTHLY':
+          selectRecurrence = 'Lunar';
+          break;
+        default:
+          selectRecurrence = 'Zilnic';
+          break;
+      }
+      recurrencyController.text = selectRecurrence;
     }
   }
 
@@ -185,7 +205,7 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
                 const SizedBox(
                   height: 25,
                 ),
-                const Text('Reminders setting'),
+                // const Text('Reminders setting'),
                 const SizedBox(
                   height: 25,
                 ),
@@ -195,24 +215,23 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
                 ),
                 // Row(
                 //   children: [
-                DropDownField(
-                  controller: recurrencyController,
-                  hintText: "Recurenta",
-                  enabled: true,
-                  items: recurrencyOptions,
-                  onValueChanged: (value) {
-                    setState(() {
-                      selectRecurrence = value;
-                    });
-                  },
+                CheckboxListTile(
+                    title: const Text("Activitate recurenta"),
+                    controlAffinity: ListTileControlAffinity.platform,
+                    value: isRecurrent,
+                    onChanged: (value) {
+                      setState(() {
+                        isRecurrent = value!;
+                      });
+                    }),
+                const SizedBox(
+                  height: 25,
                 ),
-                TextFormField(
-                  style: const TextStyle(fontSize: 16),
-                  decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      hintText: 'Frecventa recurentei'),
-                  controller: recurrencyFreqController,
-                )
+                setRecurrenceRule(),
+                const SizedBox(
+                  height: 25,
+                ),
+                setDetails(),
               ],
             ),
             // ],
@@ -381,4 +400,36 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
             border: UnderlineInputBorder(), hintText: 'Descriere'),
         controller: detailsController,
       );
+
+  Widget setRecurrenceRule() {
+    if (isRecurrent) {
+      return Column(
+        children: [
+          DropDownField(
+            itemsVisibleInDropdown: recurrencyOptions.length,
+            controller: recurrencyController,
+            hintText: "Recurenta",
+            enabled: true,
+            items: recurrencyOptions,
+            onValueChanged: (value) {
+              setState(() {
+                selectRecurrence = value;
+              });
+            },
+          ),
+          TextFormField(
+            style: const TextStyle(fontSize: 16),
+            decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                hintText: 'Frecventa recurentei'),
+            controller: recurrencyFreqController,
+            validator: (number) => number != null && number.isEmpty
+                ? 'Frecventa trebuie sa fie minim 1'
+                : null,
+          )
+        ],
+      );
+    }
+    return Container();
+  }
 }
