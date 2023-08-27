@@ -38,13 +38,12 @@ class _UserHomePageState extends State<UserHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color.fromARGB(75, 102, 178, 255),
         appBar: AppBar(
           title: Text('Azi, ${DateFormat('d/M/y').format(DateTime.now())}'),
           backgroundColor: const Color.fromARGB(255, 102, 178, 255),
           actions: [
             IconButton(
-                icon: const Icon(Icons.note_add_rounded),
+                icon: const Icon(Icons.add),
                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const ActivityEditPage(),
                     ))),
@@ -136,7 +135,7 @@ class _UserHomePageState extends State<UserHomePage> {
           activityIconColor = Colors.yellowAccent;
           break;
         default:
-          activityIconColor = Colors.white;
+          activityIconColor = const Color.fromARGB(255, 102, 178, 255);
           break;
       }
 

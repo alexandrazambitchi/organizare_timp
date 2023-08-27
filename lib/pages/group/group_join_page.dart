@@ -38,7 +38,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
         appBar: AppBar(
           leading: CloseButton(
             onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => GroupPage(),
+              builder: (context) => const GroupPage(),
             )),
           ),
         ),

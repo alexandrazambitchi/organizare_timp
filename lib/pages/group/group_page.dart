@@ -18,16 +18,16 @@ class _GroupPageState extends State<GroupPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.home),
+          icon: const Icon(Icons.home),
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => HomePage(),
+            builder: (context) => const HomePage(),
           )),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_circle_outline_rounded),
             onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => GroupEditPage(),
+              builder: (context) => const GroupEditPage(),
             )),
           )
         ],

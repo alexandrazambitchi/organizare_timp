@@ -91,8 +91,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   final CalendarController _controller = CalendarController();
 
-  final Color _viewHeaderColor = const Color(0xff03aa4f6);
-  final Color _calendarColor = const Color(0xff0bae5ff);
+  final Color _viewHeaderColor = const Color.fromARGB(100, 102, 178, 255);
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +99,7 @@ class _CalendarPageState extends State<CalendarPage> {
       appBar: AppBar(
         actions: [
           IconButton(
-              icon: const Icon(Icons.note_add_rounded),
+              icon: const Icon(Icons.add),
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const ActivityEditPage(),
                   )))
@@ -137,7 +136,7 @@ class _CalendarPageState extends State<CalendarPage> {
               CalendarView.timelineWorkWeek
             ],
             viewHeaderStyle: ViewHeaderStyle(backgroundColor: _viewHeaderColor),
-            backgroundColor: _calendarColor,
+            // backgroundColor: _calendarColor,
             controller: _controller,
             initialDisplayDate: DateTime.now(),
             selectionDecoration:

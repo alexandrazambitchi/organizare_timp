@@ -67,10 +67,8 @@ class _RegisterPageState extends State<RegisterPage> {
               height: 25,
             ),
             //logo
-            const Icon(
-              Icons.calendar_month,
-              size: 75,
-            ),
+            const Icon(Icons.calendar_month,
+                size: 75, color: Color.fromARGB(255, 102, 178, 255)),
 
             const SizedBox(
               height: 20,

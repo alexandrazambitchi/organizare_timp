@@ -58,20 +58,18 @@ class _LoginPageState extends State<LoginPage> {
               height: 50,
             ),
             //logo
-            const Icon(
-              Icons.calendar_month,
-              size: 100,
-            ),
+            const Icon(Icons.calendar_month,
+                size: 100, color: Color.fromARGB(255, 102, 178, 255)),
 
             const SizedBox(
               height: 50,
             ),
 
-            const Text(
+            Text(
               'Bine ati revenit!',
               style: TextStyle(
-                color: Colors.black,
                 fontSize: 20,
+                color: Colors.grey[700],
               ),
             ),
 

@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:organizare_timp/model/user_model.dart';
 import 'package:organizare_timp/pages/group/group_list_page.dart';
-import 'package:organizare_timp/pages/group/group_page.dart';
 import 'package:organizare_timp/services/auth_service.dart';
 import 'package:organizare_timp/services/group_service.dart';
 
@@ -110,10 +109,7 @@ class _GroupEditPageState extends State<GroupEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: CloseButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => GroupPage(),
-                  ))),
+          leading: const CloseButton(),
         ),
         body: Column(
           children: <Widget>[

@@ -9,7 +9,6 @@ class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(100, 102, 178, 255),
       body: SafeArea(
           child: Center(
               child: SingleChildScrollView(
@@ -20,19 +19,20 @@ class FirstPage extends StatelessWidget {
               height: 25,
             ),
             //logo
-            const Icon(
-              Icons.calendar_month,
-              size: 100,
-            ),
+            const Icon(Icons.calendar_month,
+                size: 100, color: Color.fromARGB(255, 102, 178, 255)),
             const SizedBox(
               height: 25,
             ),
             Text(
               'Bine ati venit!',
-              style: TextStyle(color: Colors.grey[700]),
+              style: TextStyle(color: Colors.grey[700], fontSize: 25.0),
+            ),
+            const SizedBox(
+              height: 35,
             ),
             Text(
-              'Ai deja un cont? Foloseste autentificarea',
+              'Ai deja un cont? Foloseste autentificarea!',
               style: TextStyle(color: Colors.grey[700]),
             ),
             const SizedBox(
@@ -41,7 +41,7 @@ class FirstPage extends StatelessWidget {
 
             Button(
               onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => LoginPage(),
+                builder: (context) => const LoginPage(),
               )),
               text: 'Autentificare',
             ),
@@ -50,15 +50,16 @@ class FirstPage extends StatelessWidget {
               height: 50,
             ),
             Text(
-              'Pentru utilizatori noi, va puteti crea un cont nou chiar acum',
+              'Pentru utilizatori noi,\n va puteti crea un cont nou chiar acum!',
               style: TextStyle(color: Colors.grey[700]),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(
               height: 25,
             ),
             Button(
               onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => RegisterPage(),
+                builder: (context) => const RegisterPage(),
               )),
               text: 'Inregistrare',
             ),
