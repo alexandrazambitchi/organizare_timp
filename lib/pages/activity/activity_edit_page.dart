@@ -36,7 +36,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   final detailsController = TextEditingController();
 
   List<String> categories = ["Serviciu", "Casa", "Personal", "Timp liber"];
-  List<String> priorities = ["Important", "Mediu", "Scazut"];
+  List<String> priorities = ["Mare", "Mediu", "Mica"];
   List<String> recurrencyOptions = ["Zilnic", "Saptamanal", "Lunar"];
   String selectCategory = "";
   String selectPriority = "";
@@ -58,9 +58,28 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
       startDate = activity.startTime;
       endDate = activity.endTime;
       categoryController.text = activity.category!;
+      selectCategory = activity.category!;
       priorityController.text = activity.priority!;
+      selectPriority = activity.priority!;
       locationController.text = activity.location!;
-      recurrencyController.text = activity.recurrenceRule!;
+      isRecurrent = activity.recurrenceRule != null;
+      List<String> recurencySplit = activity.recurrenceRule!.split("=");
+      recurrencyFreqController.text = recurencySplit.last;
+      switch (recurencySplit[1].split(';')[0]) {
+        case 'DAILY':
+          selectRecurrence = 'Zilnic';
+          break;
+        case 'WEEKLY':
+          selectRecurrence = 'Saptamanal';
+          break;
+        case 'MONTHLY':
+          selectRecurrence = 'Lunar';
+          break;
+        default:
+          selectRecurrence = 'Zilnic';
+          break;
+      }
+      recurrencyController.text = selectRecurrence;
       detailsController.text = activity.notes!;
       isChecked = activity.isAllDay;
     }
@@ -71,52 +90,52 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
     switch (category) {
       case 'Serviciu':
         switch (priority) {
-          case 'Important':
+          case 'Mare':
             activityColor = Colors.amber.shade600;
             break;
           case 'Mediu':
             activityColor = Colors.amber.shade300;
             break;
-          case 'Scazut':
+          case 'Mica':
             activityColor = Colors.amber.shade100;
             break;
         }
         break;
       case 'Casa':
         switch (priority) {
-          case 'Important':
+          case 'Mare':
             activityColor = Colors.teal.shade600;
             break;
           case 'Mediu':
             activityColor = Colors.teal.shade300;
             break;
-          case 'Scazut':
+          case 'Mica':
             activityColor = Colors.teal.shade100;
             break;
         }
         break;
       case 'Personal':
         switch (priority) {
-          case 'Important':
+          case 'Mare':
             activityColor = Colors.indigo.shade500;
             break;
           case 'Mediu':
             activityColor = Colors.indigo.shade300;
             break;
-          case 'Scazut':
+          case 'Mica':
             activityColor = Colors.indigo.shade100;
             break;
         }
         break;
       case 'Timp liber':
         switch (priority) {
-          case 'Important':
+          case 'Mare':
             activityColor = Colors.purple.shade600;
             break;
           case 'Mediu':
             activityColor = Colors.purple.shade300;
             break;
-          case 'Scazut':
+          case 'Mica':
             activityColor = Colors.purple.shade100;
             break;
         }
@@ -171,6 +190,14 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
 
       NotificationService().scheduleNotification(
           title: titleController.text,
+          body: '$endDate',
+          scheduleNotificationDateTime: endDate,
+          payload: activity.id.toString());
+      debugPrint('Notification Scheduled for $endDate');
+      debugPrint('payload ${activity.id}');
+
+      NotificationService().scheduleNotification(
+          title: titleController.text,
           body: '$startDate',
           scheduleNotificationDateTime: startDate,
           payload: activity.id.toString());
@@ -218,7 +245,9 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                 ),
 
                 CheckboxListTile(
-                    title: const Text("Toata ziua"),
+                    title: const Text(
+                      "Toata ziua",
+                    ),
                     controlAffinity: ListTileControlAffinity.platform,
                     value: isChecked,
                     onChanged: (value) {
@@ -237,8 +266,6 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                 const SizedBox(
                   height: 25,
                 ),
-
-                //category
                 DropDownField(
                   itemsVisibleInDropdown: categories.length,
                   controller: categoryController,
@@ -254,7 +281,6 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                 const SizedBox(
                   height: 25,
                 ),
-                // setPriority(),
                 DropDownField(
                   itemsVisibleInDropdown: priorities.length,
                   controller: priorityController,
@@ -274,10 +300,6 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                 const SizedBox(
                   height: 25,
                 ),
-                setDetails(),
-                const SizedBox(
-                  height: 25,
-                ),
                 CheckboxListTile(
                     title: const Text("Activitate recurenta"),
                     controlAffinity: ListTileControlAffinity.platform,
@@ -291,8 +313,10 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
                   height: 25,
                 ),
                 setRecurrenceRule(),
-                //   ],
-                // ),
+                const SizedBox(
+                  height: 25,
+                ),
+                setDetails(),
               ],
             ),
           ),
