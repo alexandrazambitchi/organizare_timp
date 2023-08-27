@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      // backgroundColor: const Color.fromARGB(75, 102, 178, 255),
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(
@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
             Text(
               'Bine ati revenit!',
               style: TextStyle(
-                color: Colors.grey[700],
+                color: Colors.black,
                 fontSize: 16,
               ),
             ),

@@ -17,6 +17,7 @@ class ActivityViewingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 102, 178, 255),
           leading: const CloseButton(),
         ),
         body: ListView(

@@ -127,13 +127,13 @@ class _GroupViewingPageState extends State<GroupViewingPage> {
     List<UserModel> usersData = [];
     getAllUsersData();
     List<String> tempMembersList = widget.group.members;
-    
-    for(var member in usersData){
-      if(tempMembersList.contains(member.uid)){
+
+    for (var member in usersData) {
+      if (tempMembersList.contains(member.uid)) {
         groupMembers.add(member);
       }
     }
-  
+
     if (groupMembers.isEmpty) {
       return const Text("Nu exista niciun membru");
     }

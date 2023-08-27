@@ -106,14 +106,15 @@ class _CalendarPageState extends State<CalendarPage> {
                   )))
         ],
       ),
-      body: SafeArea(
-          child: Center(
-              child: SingleChildScrollView(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-            userActList(),
-          ])))),
+      body: userActList(),
+      // SafeArea(
+      // child: Center(
+      //     child: SingleChildScrollView(
+      //         child: Column(
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             children: [
+
+      // ])))
     );
   }
 

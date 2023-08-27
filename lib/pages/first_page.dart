@@ -9,6 +9,7 @@ class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(100, 102, 178, 255),
       body: SafeArea(
           child: Center(
               child: SingleChildScrollView(

@@ -1,0 +1,51 @@
+@startuml classDiagram
+set namespaceSeparator ::
+
+class "organizare_timp::firebase_options.dart::DefaultFirebaseOptions" {
+  {static} +FirebaseOptions android
+  {static} +FirebaseOptions ios
+  {static} +FirebaseOptions currentPlatform
+}
+
+"organizare_timp::firebase_options.dart::DefaultFirebaseOptions" o-- "firebase_core_platform_interface::firebase_core_platform_interface.dart::FirebaseOptions"
+
+
+class "organizare_timp::model::group_activity.dart::GroupActivity" {
+  +String? groupId
+  +String? priority
+  +Map<String, dynamic> toMap()
+}
+
+"syncfusion_flutter_calendar::src::calendar::appointment_engine::appointment.dart::Appointment" <|-- "organizare_timp::model::group_activity.dart::GroupActivity"
+
+class "organizare_timp::model::group.dart::Group" {
+  +String? id
+  +String name
+  +UserModel leader
+  +String? description
+  +List<UserModel> members
+  +List<GroupActivity> activities
+  +Map<String, dynamic> toMap()
+}
+
+class "organizare_timp::model::activity.dart::Activity" {
+  +String user
+  +String? category
+  +String? priority
+  +Color activityColor
+  +Map<String, dynamic> toMap()
+}
+
+"organizare_timp::model::activity.dart::Activity" o-- "dart::ui::Color"
+"syncfusion_flutter_calendar::src::calendar::appointment_engine::appointment.dart::Appointment" <|-- "organizare_timp::model::activity.dart::Activity"
+
+class "organizare_timp::model::user_model.dart::UserModel" {
+  +String uid
+  +String name
+  +String email
+}
+
+
+
+
+@enduml

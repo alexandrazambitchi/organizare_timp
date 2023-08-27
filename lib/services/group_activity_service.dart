@@ -56,7 +56,6 @@ class GroupActivityService extends ChangeNotifier {
 
   Future<void> editActivity(
       String groupId, String groupActivityId, GroupActivity newActivity) async {
-    
     newActivity.id = groupActivityId;
 
     await firestore

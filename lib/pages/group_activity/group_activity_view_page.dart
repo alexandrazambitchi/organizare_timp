@@ -12,9 +12,12 @@ class GroupActivityViewingPage extends StatelessWidget {
 
   final String objId;
 
-  const GroupActivityViewingPage(
-      {Key? key, required this.groupActivity, required this.objId, required this.groupId,})
-      : super(key: key);
+  const GroupActivityViewingPage({
+    Key? key,
+    required this.groupActivity,
+    required this.objId,
+    required this.groupId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +67,7 @@ class GroupActivityViewingPage extends StatelessWidget {
                   onPressed: () =>
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => GroupActivityEditPage(
-                                groupId:  groupId,
+                                groupId: groupId,
                                 groupActivity: groupActivity,
                                 objId: objId,
                               ))),
@@ -78,9 +81,10 @@ class GroupActivityViewingPage extends StatelessWidget {
   Widget buildDateTime(GroupActivity groupActivity) {
     return Column(
       children: [
-        buildDate(
-            groupActivity.isAllDay ? 'Toata ziua' : 'De la ', groupActivity.startTime),
-        if (!groupActivity.isAllDay) buildDate('Pana la ', groupActivity.endTime)
+        buildDate(groupActivity.isAllDay ? 'Toata ziua' : 'De la ',
+            groupActivity.startTime),
+        if (!groupActivity.isAllDay)
+          buildDate('Pana la ', groupActivity.endTime)
       ],
     );
   }

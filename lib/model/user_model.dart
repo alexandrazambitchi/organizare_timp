@@ -3,9 +3,5 @@ class UserModel {
   String name;
   String email;
 
-  UserModel({
-    required this.uid,
-    required this.email,
-    required this.name
-  });
+  UserModel({required this.uid, required this.email, required this.name});
 }

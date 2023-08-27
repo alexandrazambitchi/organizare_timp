@@ -34,14 +34,13 @@ class _MultiSelectState extends State<MultiSelect> {
   }
 
   void checkIfAlreadyChecked() {
-    if(widget.users != null){
+    if (widget.users != null) {
       for (var user in widget.users!) {
-      if (widget.alreadySelected!.contains(user)) {
-        itemChange(user, true);
+        if (widget.alreadySelected!.contains(user)) {
+          itemChange(user, true);
+        }
       }
     }
-    }
-    
   }
 
   @override

@@ -169,18 +169,24 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
         activityService.addActivity(activity);
       }
 
-       NotificationService().scheduleNotification(
-                    title: titleController.text,
-                    body: '$startDate',
-                    scheduleNotificationDateTime: startDate,
-                    payload: activity.id.toString()
-                  );
+      NotificationService().scheduleNotification(
+          title: titleController.text,
+          body: '$startDate',
+          scheduleNotificationDateTime: startDate,
+          payload: activity.id.toString());
       debugPrint('Notification Scheduled for $startDate');
       debugPrint('payload ${activity.id}');
-      final snackBar = SnackBar(content: Text('Notificare activata la $startDate', style: TextStyle(fontSize: 24),),);
+      final snackBar = SnackBar(
+        content: Text(
+          'Notificare activata la $startDate',
+          style: const TextStyle(fontSize: 24),
+        ),
+      );
 
-      ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(snackBar);
-      
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(snackBar);
+
       Navigator.of(context).pop();
     }
   }
@@ -189,6 +195,7 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 102, 178, 255),
           leading: const CloseButton(),
           actions: [
             IconButton(
@@ -452,33 +459,35 @@ class _ActivityEditPageState extends State<ActivityEditPage> {
             border: UnderlineInputBorder(), hintText: 'Descriere'),
         controller: detailsController,
       );
-  
-  Widget setRecurrenceRule(){
-    if(isRecurrent){
-      return Column(children: [
-        DropDownField(
-          itemsVisibleInDropdown: recurrencyOptions.length,
-                  controller: recurrencyController,
-                  hintText: "Recurenta",
-                  enabled: true,
-                  items: recurrencyOptions,
-                  onValueChanged: (value) {
-                    setState(() {
-                      selectRecurrence = value;
-                    });
-                  },
-                ),
-                TextFormField(
-                  style: const TextStyle(fontSize: 16),
-                  decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      hintText: 'Frecventa recurentei'),
-                  controller: recurrencyFreqController,
-                   validator: (number) => number != null && number.isEmpty
-            ? 'Frecventa trebuie sa fie minim 1'
-            : null,
-                )
-      ],);
+
+  Widget setRecurrenceRule() {
+    if (isRecurrent) {
+      return Column(
+        children: [
+          DropDownField(
+            itemsVisibleInDropdown: recurrencyOptions.length,
+            controller: recurrencyController,
+            hintText: "Recurenta",
+            enabled: true,
+            items: recurrencyOptions,
+            onValueChanged: (value) {
+              setState(() {
+                selectRecurrence = value;
+              });
+            },
+          ),
+          TextFormField(
+            style: const TextStyle(fontSize: 16),
+            decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                hintText: 'Frecventa recurentei'),
+            controller: recurrencyFreqController,
+            validator: (number) => number != null && number.isEmpty
+                ? 'Frecventa trebuie sa fie minim 1'
+                : null,
+          )
+        ],
+      );
     }
     return Container();
   }

@@ -9,12 +9,9 @@ class GroupActivityEditPage extends StatefulWidget {
   final String? objId;
   final String groupId;
 
-  const GroupActivityEditPage({
-    Key? key,
-    this.groupActivity,
-    this.objId,
-    required this.groupId
-  }) : super(key: key);
+  const GroupActivityEditPage(
+      {Key? key, this.groupActivity, this.objId, required this.groupId})
+      : super(key: key);
 
   @override
   State<GroupActivityEditPage> createState() => _GroupActivityEditPageState();
@@ -39,7 +36,7 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
   List<String> recurrencyOptions = ["Zilnic", "Saptamanal", "Lunar"];
   String selectPriority = "";
   String selectRecurrence = "";
-  
+
   String? get objId => null;
 
   @override
@@ -66,16 +63,16 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
   Color setActivityColor(String priority) {
     Color activityColor = Colors.blue;
     switch (priority) {
-          case 'Important':
-            activityColor = Colors.blue.shade600;
-            break;
-          case 'Mediu':
-            activityColor = Colors.blue.shade300;
-            break;
-          case 'Scazut':
-            activityColor = Colors.blue.shade100;
-            break;
-        }
+      case 'Important':
+        activityColor = Colors.blue.shade600;
+        break;
+      case 'Mediu':
+        activityColor = Colors.blue.shade300;
+        break;
+      case 'Scazut':
+        activityColor = Colors.blue.shade100;
+        break;
+    }
     return activityColor;
   }
 
@@ -94,7 +91,7 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
 
   void saveNewActivity() async {
     final isValid = formKey.currentState!.validate();
-    
+
     if (isValid) {
       final groupActivity = GroupActivity(
         subject: titleController.text,
@@ -102,7 +99,8 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
         endTime: endDate,
         notes: detailsController.text,
         location: locationController.text,
-        recurrenceRule: setRecurrency(recurrencyController.text, recurrencyFreqController.text),
+        recurrenceRule: setRecurrency(
+            recurrencyController.text, recurrencyFreqController.text),
         isAllDay: isChecked,
         priority: selectPriority,
       );
@@ -110,7 +108,6 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
       final isEditing = widget.groupActivity != null;
 
       final GroupActivityService groupActivityService = GroupActivityService();
-      
 
       if (isEditing) {
         final objId = widget.objId!;
@@ -198,28 +195,27 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
                 ),
                 // Row(
                 //   children: [
-                    DropDownField(
-                      controller: recurrencyController,
-                      hintText: "Recurenta",
-                      enabled: true,
-                      items: recurrencyOptions,
-                      onValueChanged: (value) {
-                        setState(() {
-                          selectRecurrence = value;
-                        });
-                      },
-                    ),
-                    TextFormField(
-                      style: const TextStyle(fontSize: 16),
-                      decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        hintText: 'Frecventa recurentei'
-                      ),
-                      controller: recurrencyFreqController,
-                    )
-                  ],
+                DropDownField(
+                  controller: recurrencyController,
+                  hintText: "Recurenta",
+                  enabled: true,
+                  items: recurrencyOptions,
+                  onValueChanged: (value) {
+                    setState(() {
+                      selectRecurrence = value;
+                    });
+                  },
                 ),
-              // ],
+                TextFormField(
+                  style: const TextStyle(fontSize: 16),
+                  decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      hintText: 'Frecventa recurentei'),
+                  controller: recurrencyFreqController,
+                )
+              ],
+            ),
+            // ],
             // ),
           ),
         ));

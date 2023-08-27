@@ -1,32 +1,32 @@
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class GroupActivity extends Appointment{
+class GroupActivity extends Appointment {
   String? groupId;
   String? priority;
 
   GroupActivity({
     id,
-    subject, 
+    subject,
     startTime,
     endTime,
     notes,
-    location, 
+    location,
     recurrenceRule,
     isAllDay,
     this.groupId,
     this.priority,
   }) : super(
-    id: id,
-    subject: subject,
-    startTime: startTime,
-    endTime: endTime,
-    notes: notes,
-    location: location,
-    recurrenceRule: recurrenceRule,
-    isAllDay: isAllDay,
-  );
+          id: id,
+          subject: subject,
+          startTime: startTime,
+          endTime: endTime,
+          notes: notes,
+          location: location,
+          recurrenceRule: recurrenceRule,
+          isAllDay: isAllDay,
+        );
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'groupId': groupId,
@@ -37,8 +37,7 @@ class GroupActivity extends Appointment{
       'priority': priority,
       'location': location,
       'recurency': recurrenceRule,
-      'isAllDay': isAllDay, 
+      'isAllDay': isAllDay,
     };
   }
-
 }

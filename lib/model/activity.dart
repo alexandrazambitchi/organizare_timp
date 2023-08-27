@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class Activity extends Appointment{
+class Activity extends Appointment {
   String user;
   String? category;
   String? priority;
@@ -9,11 +9,11 @@ class Activity extends Appointment{
 
   Activity({
     id,
-    subject, 
+    subject,
     startTime,
     endTime,
     notes,
-    location, 
+    location,
     recurrenceRule,
     isAllDay,
     required this.user,
@@ -21,17 +21,17 @@ class Activity extends Appointment{
     this.priority,
     this.activityColor = Colors.blue,
   }) : super(
-    id: id,
-    subject: subject,
-    startTime: startTime,
-    endTime: endTime,
-    notes: notes,
-    location: location,
-    recurrenceRule: recurrenceRule,
-    isAllDay: isAllDay,
-  );
+          id: id,
+          subject: subject,
+          startTime: startTime,
+          endTime: endTime,
+          notes: notes,
+          location: location,
+          recurrenceRule: recurrenceRule,
+          isAllDay: isAllDay,
+        );
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'user': user,
@@ -43,8 +43,7 @@ class Activity extends Appointment{
       'priority': priority,
       'location': location,
       'recurency': recurrenceRule,
-      'isAllDay': isAllDay, 
+      'isAllDay': isAllDay,
     };
   }
-
 }

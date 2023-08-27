@@ -43,10 +43,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   final List<Widget> pages = [
-    UserHomePage(),
-    CalendarPage(),
-    GroupPage(),
-    SettingPage()
+    const UserHomePage(),
+    const CalendarPage(),
+    const GroupPage(),
+    const SettingPage()
   ];
 
   @override
@@ -54,14 +54,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: pages[selectedIndex],
       bottomNavigationBar: Container(
-        color: Colors.grey.shade200,
+        color: const Color.fromARGB(255, 102, 178, 255),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
           child: GNav(
-              backgroundColor: Colors.grey.shade200,
+              backgroundColor: const Color.fromARGB(255, 102, 178, 255),
               hoverColor: Colors.grey.shade700,
-              activeColor: Colors.purple[100],
-              tabBackgroundColor: Colors.purple.shade300,
+              activeColor: Colors.white,
+              tabBackgroundColor: const Color.fromARGB(180, 102, 178, 255),
+              textStyle: const TextStyle(color: Colors.white),
               gap: 8,
               onTabChange: navigateBottomBar,
               padding: const EdgeInsets.all(16),

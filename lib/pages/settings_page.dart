@@ -35,7 +35,9 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color.fromARGB(75, 102, 178, 255),
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 102, 178, 255),
           actions: [
             IconButton(
                 onPressed: signOutUser, icon: const Icon(Icons.logout_sharp)),

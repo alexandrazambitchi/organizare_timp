@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '263803380049',
     projectId: 'organizaretimp',
     storageBucket: 'organizaretimp.appspot.com',
-    iosClientId: '263803380049-471jd83bus2b8fifag69cjjgvo05d89u.apps.googleusercontent.com',
+    iosClientId:
+        '263803380049-471jd83bus2b8fifag69cjjgvo05d89u.apps.googleusercontent.com',
     iosBundleId: 'com.example.organizareTimp',
   );
 }

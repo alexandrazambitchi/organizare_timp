@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Button extends StatelessWidget{
-
+class Button extends StatelessWidget {
   final Function()? onTap;
   final String text;
 
@@ -15,10 +14,10 @@ class Button extends StatelessWidget{
         padding: const EdgeInsets.all(25),
         margin: const EdgeInsets.symmetric(horizontal: 25),
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: const Color.fromARGB(255, 102, 178, 255),
           borderRadius: BorderRadius.circular(8),
         ),
-        child:  Center(
+        child: Center(
           child: Text(
             text,
             style: const TextStyle(
@@ -31,5 +30,4 @@ class Button extends StatelessWidget{
       ),
     );
   }
-
 }

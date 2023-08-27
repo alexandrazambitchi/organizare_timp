@@ -5,12 +5,11 @@ class Textfields extends StatelessWidget {
   final String hintText;
   final bool obscureText;
 
-  const Textfields({
-    super.key,
-    required this.controller,
-    required this.hintText,
-    required this.obscureText
-    });
+  const Textfields(
+      {super.key,
+      required this.controller,
+      required this.hintText,
+      required this.obscureText});
 
   @override
   Widget build(BuildContext context) {

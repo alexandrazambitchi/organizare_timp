@@ -16,17 +16,16 @@ class ActivityService extends ChangeNotifier {
     final String currentUserId = auth.currentUser!.uid;
 
     Activity newActivity = Activity(
-      user: currentUserId,
-      subject: activity.subject,
-      notes: activity.notes,
-      startTime: activity.startTime,
-      endTime: activity.endTime,
-      category: activity.category,
-      priority: activity.priority,
-      location: activity.location,
-      recurrenceRule: activity.recurrenceRule,
-      isAllDay: activity.isAllDay
-    );
+        user: currentUserId,
+        subject: activity.subject,
+        notes: activity.notes,
+        startTime: activity.startTime,
+        endTime: activity.endTime,
+        category: activity.category,
+        priority: activity.priority,
+        location: activity.location,
+        recurrenceRule: activity.recurrenceRule,
+        isAllDay: activity.isAllDay);
 
     DocumentReference docReference = await firestore
         .collection('user_activity')

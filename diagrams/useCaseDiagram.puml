@@ -1,0 +1,31 @@
+@startuml
+top to bottom direction
+Om -down-> (Creaza cont)
+Om -down-> (Se logheaza)
+
+(Creaza cont) -down-> User
+(Se logheaza) -down-> User
+
+User -> (Creaza activitate)
+User -> (Vizualizeaza activitate)
+User -> (Gestioneaza activitate)
+User --> (Creaza group)
+User -left-> (Modifica setari)
+User -left-> (Vizualizeaza calendar)
+User -left-> (Vizualizeaza setari)
+
+newpage
+top to bottom direction
+User -down-> (Creaza grup)
+(Creaza grup) -down-> :Group Admin: : Devine admin grup
+:Group Admin: -down-> (Creaza activitate grup)
+:Group Admin: -down-> (Editeaza activitate grup)
+:Group Admin: -left-> (Adauga membru)
+:Group Admin: -left-> (Scoate membru)
+:Group Admin: -> (Gestioneaza activitate grup)
+:Group Admin: -> (Vizualizeaza activitate grup)
+User -> (Se alatura unui grup)
+(Se alatura unui grup) -> :Membru grup:
+:Membru grup: -> (Vizualizeaza activitati grup)
+:Membru grup: -> (Iese din grup)
+@enduml

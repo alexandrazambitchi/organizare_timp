@@ -6,6 +6,7 @@ import 'package:organizare_timp/services/notification_service.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:dcdg/dcdg.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
