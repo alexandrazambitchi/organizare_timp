@@ -120,37 +120,45 @@ class _GroupEditPageState extends State<GroupEditPage> {
             const SizedBox(
               height: 25,
             ),
-            Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(children: <Widget>[
-                  TextFormField(
-                    controller: groupNameController,
-                    decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.group),
-                        hintText: "Numele grupului"),
-                  ),
-                  TextFormField(
-                    controller: descriptionController,
-                    decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.group),
-                        hintText: "Descrierea grupului"),
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  ElevatedButton(
-                      onPressed: showMultiSelect,
-                      child: const Text('Adauga utilizatori')),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  const Text('Utilizatori selectati: '),
-                  showAddedUsers(),
-                  Button(
-                    text: "Salveaza grup",
-                    onTap: saveGroup,
-                  )
-                ]))
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(children: <Widget>[
+                      TextFormField(
+                        controller: groupNameController,
+                        decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.group),
+                            hintText: "Numele grupului"),
+                      ),
+                      TextFormField(
+                        controller: descriptionController,
+                        decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.group),
+                            hintText: "Descrierea grupului"),
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      ElevatedButton(
+                          onPressed: showMultiSelect,
+                          child: const Text('Adauga utilizatori')),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      const Text('Utilizatori selectati: '),
+                      showAddedUsers(),
+                      const SizedBox(
+                        width: 200,
+                      ),
+                    ])),
+                Button(
+                  text: "Salveaza grup",
+                  onTap: saveGroup,
+                )
+              ],
+            )
           ],
         ));
   }

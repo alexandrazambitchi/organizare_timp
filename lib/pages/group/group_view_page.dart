@@ -45,77 +45,127 @@ class _GroupViewingPageState extends State<GroupViewingPage> {
     return Scaffold(
         appBar: AppBar(
           leading: BackButton(),
+          title: Text('Detalii grup'),
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(32),
-          children: <Widget>[
-            Text(
-              widget.group.name,
-              style: const TextStyle(fontSize: 24),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(32),
+                children: <Widget>[
+                  Text(
+                    widget.group.name,
+                    style: const TextStyle(fontSize: 24),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  const Text(
+                    'Detalii:',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    widget.group.description!,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  const Text(
+                    'Id leader:',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    widget.group.leader,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  showMembers(),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                ],
+              ),
             ),
-            Text(
-              widget.group.description!,
-              style: const TextStyle(fontSize: 16),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Button(
+                  onTap: () => Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              GroupActivityDayViewPage(groupId: widget.objId))),
+                  text: "Vezi activitatile de azi"),
             ),
-            Text(
-              widget.group.leader,
-              style: const TextStyle(fontSize: 16),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Button(
+                  onTap: () => Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                          builder: (context) => GroupActivityCalendarPage(
+                              groupId: widget.objId))),
+                  text: "Vezi activitatile in calendar"),
             ),
-            showMembers(),
-            Button(
-                onTap: () => Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            GroupActivityDayViewPage(groupId: widget.objId))),
-                text: "Vezi activitatile de azi"),
-            Button(
-                onTap: () => Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            GroupActivityCalendarPage(groupId: widget.objId))),
-                text: "Vezi activitatile in calendar"),
             adminControls(),
-            Button(onTap: leaveGroup, text: "Iesi din grup")
           ],
         ));
   }
 
   Widget adminControls() {
     if (auth.currentUser!.uid == widget.group.leader) {
-      return Row(
-        children: [
-          IconButton(
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 45.0, top: 20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+                iconSize: 30.0,
+                onPressed: () =>
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => GroupActivityEditPage(
+                              groupId: widget.objId,
+                            ))),
+                icon: const Icon(Icons.add)),
+            const SizedBox(
+              width: 25,
+            ),
+            IconButton(
+              iconSize: 30.0,
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                final groupService = GroupService();
+
+                groupService.deleteGroup(widget.objId);
+                Navigator.of(context).pop();
+              },
+            ),
+            const SizedBox(
+              width: 25,
+            ),
+            IconButton(
+              iconSize: 30.0,
+              icon: const Icon(Icons.edit),
               onPressed: () =>
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => GroupActivityEditPage(
-                            groupId: widget.objId,
+                      builder: (context) => GroupEditPage(
+                            group: widget.group,
+                            objId: widget.objId,
                           ))),
-              icon: const Icon(Icons.add)),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              final groupService = GroupService();
-
-              groupService.deleteGroup(widget.objId);
-              Navigator.of(context).pop();
-            },
-          ),
-          const SizedBox(
-            width: 25,
-          ),
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () =>
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => GroupEditPage(
-                          group: widget.group,
-                          objId: widget.objId,
-                        ))),
-          ),
-        ],
+            ),
+          ],
+        ),
       );
     } else {
-      return Container();
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 40.0),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Button(onTap: leaveGroup, text: "Iesi din grup"),
+        ),
+      );
     }
   }
 
