@@ -132,7 +132,7 @@ class _UserHomePageState extends State<UserHomePage> {
           activityIconColor = Colors.orangeAccent;
           break;
         case 'Mica':
-          activityIconColor = Colors.yellowAccent;
+          activityIconColor = Colors.yellow;
           break;
         default:
           activityIconColor = const Color.fromARGB(255, 102, 178, 255);

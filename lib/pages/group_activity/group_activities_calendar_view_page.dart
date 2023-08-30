@@ -102,7 +102,6 @@ class _GroupActivityCalendarPageState extends State<GroupActivityCalendarPage> {
               CalendarView.timelineWorkWeek
             ],
             viewHeaderStyle: ViewHeaderStyle(backgroundColor: _viewHeaderColor),
-            backgroundColor: _calendarColor,
             controller: _controller,
             initialDisplayDate: DateTime.now(),
             selectionDecoration:

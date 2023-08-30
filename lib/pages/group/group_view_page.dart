@@ -44,8 +44,8 @@ class _GroupViewingPageState extends State<GroupViewingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: BackButton(),
-          title: Text('Detalii grup'),
+          leading: const BackButton(),
+          title: const Text('Detalii grup'),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -169,26 +169,17 @@ class _GroupViewingPageState extends State<GroupViewingPage> {
     }
   }
 
-  void getAllUsersData() async {
-    usersData = await authService.getUserList();
-  }
 
   Widget showMembers() {
-    List<UserModel> usersData = [];
-    getAllUsersData();
-    List<String> tempMembersList = widget.group.members;
+    List<String> tempMembersList = widget.group.members.toList();
 
-    for (var member in usersData) {
-      if (tempMembersList.contains(member.uid)) {
-        groupMembers.add(member);
-      }
-    }
-
-    if (groupMembers.isEmpty) {
+    if (tempMembersList.isEmpty) {
       return const Text("Nu exista niciun membru");
     }
     return Wrap(
-      children: groupMembers.map((e) => Chip(label: Text(e.name))).toList(),
+      children: tempMembersList.map((e) => Chip(label: Text(e))).toList(),
     );
   }
+
+
 }

@@ -33,19 +33,19 @@ class _MultiSelectState extends State<MultiSelect> {
     Navigator.pop(context, selectedUsers);
   }
 
-  void checkIfAlreadyChecked() {
-    if (widget.users != null) {
-      for (var user in widget.users!) {
-        if (widget.alreadySelected!.contains(user)) {
-          itemChange(user, true);
-        }
-      }
-    }
-  }
+  // void checkIfAlreadyChecked() {
+  //   if (widget.users != null) {
+  //     for (var user in widget.users!) {
+  //       if (widget.alreadySelected!.contains(user)) {
+  //         itemChange(user, true);
+  //       }
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    checkIfAlreadyChecked();
+    // checkIfAlreadyChecked();
     return AlertDialog(
       title: const Text('Alege utilizatorii'),
       content: SingleChildScrollView(

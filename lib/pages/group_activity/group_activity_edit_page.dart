@@ -60,23 +60,26 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
       detailsController.text = activity.notes!;
       isChecked = activity.isAllDay;
       isRecurrent = activity.recurrenceRule != null;
-      List<String> recurencySplit = activity.recurrenceRule!.split("=");
-      recurrencyFreqController.text = recurencySplit.last;
-      switch (recurencySplit[1].split(';')[0]) {
-        case 'DAILY':
-          selectRecurrence = 'Zilnic';
-          break;
-        case 'WEEKLY':
-          selectRecurrence = 'Saptamanal';
-          break;
-        case 'MONTHLY':
-          selectRecurrence = 'Lunar';
-          break;
-        default:
-          selectRecurrence = 'Zilnic';
-          break;
+      if (isRecurrent) {
+        List<String> recurencySplit = activity.recurrenceRule!.split("=");
+        recurrencyFreqController.text = recurencySplit.last;
+        switch (recurencySplit[1].split(';')[0]) {
+          case 'DAILY':
+            selectRecurrence = 'Zilnic';
+            break;
+          case 'WEEKLY':
+            selectRecurrence = 'Saptamanal';
+            break;
+          case 'MONTHLY':
+            selectRecurrence = 'Lunar';
+            break;
+          default:
+            selectRecurrence = 'Zilnic';
+            break;
+        }
+        
       }
-      recurrencyController.text = selectRecurrence;
+      recurrencyController.text = '';
     }
   }
 
@@ -97,16 +100,17 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
   }
 
   String setRecurrency(String selectedRecurrency, String number) {
-    //FREQ=DAILY;INTERVAL=1;COUNT=10
-    switch (selectedRecurrency) {
-      case 'Zilnic':
-        return 'FREQ=DAILY;COUNT=$number';
-      case 'Saptamanal':
-        return 'FREQ=WEEKLY;COUNT=$number';
-      case 'Lunar':
-        return 'FREQ=MONTHLY;COUNT=$number';
+    if (isRecurrent) {
+      switch (selectedRecurrency) {
+        case 'Zilnic':
+          return 'FREQ=DAILY;COUNT=$number';
+        case 'Saptamanal':
+          return 'FREQ=WEEKLY;COUNT=$number';
+        case 'Lunar':
+          return 'FREQ=MONTHLY;COUNT=$number';
+      }
     }
-    return 'FREQ=DAILY;COUNT=1';
+    return '';
   }
 
   void saveNewActivity() async {
@@ -206,10 +210,6 @@ class _GroupActivityEditPageState extends State<GroupActivityEditPage> {
                   height: 25,
                 ),
                 // const Text('Reminders setting'),
-                const SizedBox(
-                  height: 25,
-                ),
-                setDetails(),
                 const SizedBox(
                   height: 25,
                 ),

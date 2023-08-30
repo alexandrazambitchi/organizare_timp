@@ -25,7 +25,7 @@ class GroupActivityViewingPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 102, 178, 255),
           leading: const CloseButton(),
-          title: const Text('Detalii activitate'),
+          title: const Text('Detalii activitate grup'),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

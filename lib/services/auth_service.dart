@@ -108,4 +108,14 @@ class AuthService extends ChangeNotifier {
     }
     return users;
   }
+
+  Stream<QuerySnapshot> getGroups(String groupId) {
+    final String currentUserId = firebaseAuth.currentUser!.uid;
+
+    return firestore
+        .collection('user_group')
+        .doc(currentUserId)
+        .collection('groups')
+        .snapshots();
+  }
 }
